@@ -1,8 +1,3 @@
-import sys
-print "\n"
-print(sys.version)
-print "\n"
-
 import math
 # Vincenty's Direct formulae
 def vinc_pt(phi1, lembda1, alpha12, s ) :
@@ -92,8 +87,8 @@ def vinc_pt(phi1, lembda1, alpha12, s ) :
    alpha21    = alpha21    * 45.0 / piD4
    return phi2,  lembda2,  alpha21
 
-print "\n"
-print vinc_pt(40.12076, -83.07773, 10, 200)
+#print "\n"
+#print vinc_pt(40.12076, -83.07773, 10, 200)
 
 # inputs
 radius = 15.0 # m - the following code is an approximation that stays reasonably accurate for distances < 100km
@@ -122,11 +117,10 @@ for k in xrange(N):
     # add to list
     circlePoints.append(point)
 
-print "\n"
 #print circlePoints
 
 for point in circlePoints:
-    print point
+    print (point['lat'],point['lon'])
 
 def bearing(pointA, pointB):
 
@@ -200,6 +194,6 @@ h = haversine(40.12076, -83.07773, 40.120662, -83.078250)
 print h 
 
 for point in circlePoints:
-    print vinc_pt(point['lat'], point['lon'], h, b)
+    print vinc_pt(point['lat'], point['lon'], h/10, b)
 
 # print vinc_pt(40.12076, -83.07773, distance, bearing)
