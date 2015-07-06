@@ -285,13 +285,13 @@ for point in circlePoints:
     vehicle.flush()
 
     # sleep so we can see the change in map
-    time.sleep(30)
-
-    # sleep so we can see the change in map
     time.sleep(20)
 
-    print "Returning to Launch"
-    vehicle.mode    = VehicleMode("RTL")
-    vehicle.flush()
+# sleep so we can see the change in map
+time.sleep(10)
+
+print "Returning to Launch"
+vehicle.mode    = VehicleMode("RTL")
+vehicle.flush()
 
 
