@@ -113,9 +113,46 @@ for k in xrange(N):
 
 #print circlePoints
 
-print "Initial generated circle from provided center point"
-for point in circlePoints:
-    print (point['lat'],point['lon'])
+#print "Initial generated circle from provided center point"
+#for point in circlePoints:
+#    print (point['lat'],point['lon'])
+
+circlePoints = [
+#Penis NOT circle!
+(40.11975, -83.07676), 
+(40.1204, -83.07792), 
+(40.12036, -83.07794), 
+(40.12034, -83.07797),
+(40.12037, -83.07801),
+(40.12047, -83.07803), 
+(40.12053, -83.07798), 
+(40.12054, -83.07793), 
+(40.12051, -83.0779), 
+(40.12049, -83.07789), 
+(40.12045, -83.07786), 
+(40.12042, -83.07786), 
+(40.1204, -83.07783), 
+(40.12038, -83.0778), 
+(40.12039, -83.07775), 
+(40.12046, -83.0777), 
+(40.12058, -83.07772), 
+(40.12061, -83.07776), 
+(40.12061, -83.0778), 
+(40.1206, -83.07784), 
+(40.12058, -83.07786), 
+(40.1207, -83.07786), 
+(40.1208, -83.07785), 
+(40.12091, -83.07785), 
+(40.12102, -83.07787), 
+(40.12105, -83.07793), 
+(40.12101, -83.07798), 
+(40.12096, -83.07798), 
+(40.1209, -83.07799), 
+(40.12084, -83.07799), 
+(40.12079, -83.07798), 
+(40.12073, -83.07797), 
+(40.12068, -83.07797), 
+(40.12064, -83.07796)]
 
 def bearing(pointA, pointB):
 
@@ -161,8 +198,11 @@ def bearing(pointA, pointB):
 #
 #Point #2 - 40.120662, -83.078250
 
+# Goalpost for tip of penis 40.12180 -83.07698
+
 print "Bearing "  
-b = bearing((40.12076, -83.07773), (40.120662, -83.078250))
+#b = bearing((40.12076, -83.07773), (40.120662, -83.078250))
+b = bearing((40.12076, -83.07773), (40.12180,-83.07698))
 print b 
 
 from math import radians, cos, sin, asin, sqrt
@@ -190,7 +230,8 @@ print h
 
 print "Secondary calculated circle (polygon) from haversinve data + vincenty direct vs. new center point"
 for point in circlePoints:
-    print vinc_pt(point['lat'], point['lon'], b, h*1000)
+#    print vinc_pt(point['lat'], point['lon'], b, h*1000)
+    print vinc_pt(point[0], point[1], b, h*1000)
 
 
 
