@@ -188,8 +188,8 @@ def haversine(lon1, lat1, lon2, lat2):
 h = haversine(40.12076, -83.07773, 40.120662, -83.078250)
 print h 
 
+print "Secondary calculated circle (polygon) from haversinve data + vincenty direct vs. new center point"
 for point in circlePoints:
-    print "Using lat", [point['lat'], "lon", point['lon'], "bearing:", b, "distance", h]
     print vinc_pt(point['lat'], point['lon'], b, h*1000)
 
 
