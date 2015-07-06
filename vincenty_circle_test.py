@@ -87,9 +87,6 @@ def vinc_pt(phi1, lembda1, alpha12, s ) :
    alpha21    = alpha21    * 45.0 / piD4
    return phi2,  lembda2,  alpha21
 
-#print "\n"
-#print vinc_pt(40.12076, -83.07773, 10, 200)
-
 # inputs
 radius = 15.0 # m - the following code is an approximation that stays reasonably accurate for distances < 100km
 centerLat = 40.12076
@@ -102,9 +99,6 @@ N = 10 # number of discrete sample points to be generated along the circle
 
 # generate points
 circlePoints = []
-#point['lat']=centerLat
-#point['lon']=centerLon
-#circlePoints.append(point)
 
 for k in xrange(N):
     # compute
@@ -119,6 +113,7 @@ for k in xrange(N):
 
 #print circlePoints
 
+print "Initial generated circle from provided center point"
 for point in circlePoints:
     print (point['lat'],point['lon'])
 
@@ -194,6 +189,8 @@ h = haversine(40.12076, -83.07773, 40.120662, -83.078250)
 print h 
 
 for point in circlePoints:
-    print vinc_pt(point['lat'], point['lon'], h/10, b)
+    print "Using lat", [point['lat'], "lon", point['lon'], "bearing:", b, "distance", h]
+    print vinc_pt(point['lat'], point['lon'], b, h*1000)
 
-# print vinc_pt(40.12076, -83.07773, distance, bearing)
+
+
