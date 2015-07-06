@@ -85,7 +85,8 @@ def vinc_pt(phi1, lembda1, alpha12, s ) :
    phi2       = phi2       * 45.0 / piD4
    lembda2    = lembda2    * 45.0 / piD4
    alpha21    = alpha21    * 45.0 / piD4
-   return phi2,  lembda2,  alpha21
+#   return phi2,  lembda2,  alpha21
+   return phi2,  lembda2 # We don't need the final Azimuth in this case. Just the lat / lon pairs. 
 
 # inputs
 radius = 15.0 # m - the following code is an approximation that stays reasonably accurate for distances < 100km
@@ -231,7 +232,5 @@ print h
 print "Secondary calculated circle (polygon) from haversinve data + vincenty direct vs. new center point"
 for point in circlePoints:
 #    print vinc_pt(point['lat'], point['lon'], b, h*1000)
-    print vinc_pt(point[0], point[1], b, h*1000)
-
-
-
+#    print str(vinc_pt(point[0], point[1], b, h*1000)) + ","
+    print str(vinc_pt(point[0], point[1], b, h*1000)) 
