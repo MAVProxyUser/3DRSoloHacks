@@ -5,6 +5,7 @@
 # SoloLink_33F891
 # SoloLink_33F948
 
+# This covers the first 4096 Solos. Let me know when you see one not confirming to SoloLink_33FXXX
 for x in {0..15} # 0xf = 15
 do 
 	for y in {0..255}
