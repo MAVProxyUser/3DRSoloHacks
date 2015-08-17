@@ -6,6 +6,9 @@
 # SoloLink_33F948
 
 # This covers the first 4096 Solos. Let me know when you see one not confirming to SoloLink_33FXXX
+# Colin Guinn wants 100,000 the first year... claims it will happen in 3 months. 
+# 2:30 http://video.foxbusiness.com/v/4204114461001/worlds-first-smart-drone-takes-to-the-skies/?#sp=show-clips
+
 for x in {0..15} # 0xf = 15
 do 
 	for y in {0..255}
