@@ -1,8 +1,22 @@
-for x in {0..255}
+#Known Good SoloLink SSID's
+#
+# SoloLink_33F7EF
+# SoloLink_33F8D8
+# SoloLink_33F891
+# SoloLink_33F948
+
+for x in {0..15} # 0xf = 15
 do 
 	for y in {0..255}
 	do 
-		printf "SoloLink_33%02X%02X\n" $(($x ^ 0xf00)) $y $z
+
+		printf -v GeneratedSoloMAC "SoloLink_33F%01X%02X" $x $y 
+		printf "$GeneratedSoloMAC\n"
+
+	#	if [ "$GeneratedSoloMAC"=="SoloLink_332000" ];
+	#	then
+	#		exit
+	#	fi
         done
 done
 
