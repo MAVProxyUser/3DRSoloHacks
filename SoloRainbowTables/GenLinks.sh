@@ -13,10 +13,6 @@ do
 		printf -v GeneratedSoloMAC "SoloLink_33F%01X%02X" $x $y 
 		printf "$GeneratedSoloMAC\n"
 
-	#	if [ "$GeneratedSoloMAC"=="SoloLink_332000" ];
-	#	then
-	#		exit
-	#	fi
         done
 done
 
