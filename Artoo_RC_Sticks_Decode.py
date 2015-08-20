@@ -32,12 +32,6 @@ from scapy.all import *
 
 LENGTH = 26
 
-def bufferToHex(buffer, start, count):
-    accumulator = ''
-    for item in range(count):
-        accumulator += '%02X' % buffer[start + item] + ' '
-    return accumulator
-
 # Input is binary packet (string)
 # Output is tuple (timestamp, sequence, channels[])
 def unpack(s):
