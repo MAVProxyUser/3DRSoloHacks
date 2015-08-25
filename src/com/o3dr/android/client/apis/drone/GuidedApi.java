@@ -2,14 +2,22 @@ package com.o3dr.android.client.apis.drone;
 
 import android.os.Bundle;
 import com.o3dr.android.client.Drone;
+import com.o3dr.android.client.Drone.AttributeRetrievedListener;
 import com.o3dr.services.android.lib.coordinate.LatLong;
+import com.o3dr.services.android.lib.drone.property.Gps;
 import com.o3dr.services.android.lib.model.action.Action;
 
 public class GuidedApi
 {
   public static void pauseAtCurrentLocation(Drone paramDrone)
   {
-    paramDrone.getAttributeAsync("com.o3dr.services.android.lib.attribute.GPS", new GuidedApi.1(paramDrone));
+    paramDrone.getAttributeAsync("com.o3dr.services.android.lib.attribute.GPS", new Drone.AttributeRetrievedListener()
+    {
+      public void onRetrievalSucceed(Gps paramAnonymousGps)
+      {
+        GuidedApi.sendGuidedPoint(this.val$drone, paramAnonymousGps.getPosition(), true);
+      }
+    });
   }
 
   public static void sendGuidedPoint(Drone paramDrone, LatLong paramLatLong, boolean paramBoolean)

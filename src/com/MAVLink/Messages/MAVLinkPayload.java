@@ -5,8 +5,15 @@ import java.nio.ByteBuffer;
 public class MAVLinkPayload
 {
   public static final int MAX_PAYLOAD_SIZE = 512;
+  private static final short UNSIGNED_BYTE_MAX_VALUE = 255;
+  private static final byte UNSIGNED_BYTE_MIN_VALUE = 0;
+  private static final long UNSIGNED_INT_MAX_VALUE = 4294967295L;
+  private static final int UNSIGNED_INT_MIN_VALUE = 0;
+  private static final long UNSIGNED_LONG_MIN_VALUE = 0L;
+  private static final int UNSIGNED_SHORT_MAX_VALUE = 65535;
+  private static final short UNSIGNED_SHORT_MIN_VALUE;
   public int index;
-  public ByteBuffer payload = ByteBuffer.allocate(512);
+  public final ByteBuffer payload = ByteBuffer.allocate(512);
 
   public void add(byte paramByte)
   {
@@ -39,14 +46,14 @@ public class MAVLinkPayload
 
   public long getLong()
   {
-    long l = 0L | (0xFF & this.payload.get(7 + this.index)) << 56 | (0xFF & this.payload.get(6 + this.index)) << 48 | (0xFF & this.payload.get(5 + this.index)) << 40 | (0xFF & this.payload.get(4 + this.index)) << 32 | (0xFF & this.payload.get(3 + this.index)) << 24 | (0xFF & this.payload.get(2 + this.index)) << 16 | (0xFF & this.payload.get(1 + this.index)) << 8 | 0xFF & this.payload.get(0 + this.index);
+    long l = 0L | (0xFFFF & this.payload.get(7 + this.index)) << 56 | (0xFFFF & this.payload.get(6 + this.index)) << 48 | (0xFFFF & this.payload.get(5 + this.index)) << 40 | (0xFFFF & this.payload.get(4 + this.index)) << 32 | (0xFFFF & this.payload.get(3 + this.index)) << 24 | (0xFFFF & this.payload.get(2 + this.index)) << 16 | (0xFFFF & this.payload.get(1 + this.index)) << 8 | 0xFFFF & this.payload.get(0 + this.index);
     this.index = (8 + this.index);
     return l;
   }
 
   public long getLongReverse()
   {
-    long l = 0L | (0xFF & this.payload.get(0 + this.index)) << 56 | (0xFF & this.payload.get(1 + this.index)) << 48 | (0xFF & this.payload.get(2 + this.index)) << 40 | (0xFF & this.payload.get(3 + this.index)) << 32 | (0xFF & this.payload.get(4 + this.index)) << 24 | (0xFF & this.payload.get(5 + this.index)) << 16 | (0xFF & this.payload.get(6 + this.index)) << 8 | 0xFF & this.payload.get(7 + this.index);
+    long l = 0L | (0xFFFF & this.payload.get(0 + this.index)) << 56 | (0xFFFF & this.payload.get(1 + this.index)) << 48 | (0xFFFF & this.payload.get(2 + this.index)) << 40 | (0xFFFF & this.payload.get(3 + this.index)) << 32 | (0xFFFF & this.payload.get(4 + this.index)) << 24 | (0xFFFF & this.payload.get(5 + this.index)) << 16 | (0xFFFF & this.payload.get(6 + this.index)) << 8 | 0xFFFF & this.payload.get(7 + this.index);
     this.index = (8 + this.index);
     return l;
   }
@@ -56,6 +63,32 @@ public class MAVLinkPayload
     short s = (short)((short)(0x0 | (0xFF & this.payload.get(1 + this.index)) << 8) | 0xFF & this.payload.get(0 + this.index));
     this.index = (2 + this.index);
     return s;
+  }
+
+  public short getUnsignedByte()
+  {
+    short s = (short)(0x0 | 0xFF & this.payload.get(0 + this.index));
+    this.index = (1 + this.index);
+    return s;
+  }
+
+  public long getUnsignedInt()
+  {
+    long l = 0L | (0xFFFF & this.payload.get(3 + this.index)) << 24 | (0xFFFF & this.payload.get(2 + this.index)) << 16 | (0xFFFF & this.payload.get(1 + this.index)) << 8 | 0xFFFF & this.payload.get(0 + this.index);
+    this.index = (4 + this.index);
+    return l;
+  }
+
+  public long getUnsignedLong()
+  {
+    return getLong();
+  }
+
+  public int getUnsignedShort()
+  {
+    int i = 0x0 | (0xFF & this.payload.get(1 + this.index)) << 8 | 0xFF & this.payload.get(0 + this.index);
+    this.index = (2 + this.index);
+    return i;
   }
 
   public void putByte(byte paramByte)
@@ -92,6 +125,34 @@ public class MAVLinkPayload
   {
     add((byte)(paramShort >> 0));
     add((byte)(paramShort >> 8));
+  }
+
+  public void putUnsignedByte(short paramShort)
+  {
+    if ((paramShort < 0) || (paramShort > 255))
+      throw new IllegalArgumentException("Value is outside of the range of an unsigned byte: " + paramShort);
+    putByte((byte)paramShort);
+  }
+
+  public void putUnsignedInt(long paramLong)
+  {
+    if ((paramLong < 0L) || (paramLong > 4294967295L))
+      throw new IllegalArgumentException("Value is outside of the range of an unsigned int: " + paramLong);
+    putInt((int)paramLong);
+  }
+
+  public void putUnsignedLong(long paramLong)
+  {
+    if (paramLong < 0L)
+      throw new IllegalArgumentException("Value is outside of the range of an unsigned long: " + paramLong);
+    putLong(paramLong);
+  }
+
+  public void putUnsignedShort(int paramInt)
+  {
+    if ((paramInt < 0) || (paramInt > 65535))
+      throw new IllegalArgumentException("Value is outside of the range of an unsigned short: " + paramInt);
+    putShort((short)paramInt);
   }
 
   public void resetIndex()

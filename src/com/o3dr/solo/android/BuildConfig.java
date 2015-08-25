@@ -6,8 +6,10 @@ public final class BuildConfig
   public static final String BUILD_TYPE = "release";
   public static final boolean DEBUG = false;
   public static final String FLAVOR = "";
-  public static final int VERSION_CODE = 126;
-  public static final String VERSION_NAME = "1.0.1";
+  public static final boolean TEST_BUILD = false;
+  public static final String UPDATE_SERVER_URL = "https://firmwarehouse.3dr.com/products/?channel=Production";
+  public static final int VERSION_CODE = 128;
+  public static final String VERSION_NAME = "1.0.2";
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

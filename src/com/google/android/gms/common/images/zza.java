@@ -5,13 +5,17 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Drawable.ConstantState;
 import android.net.Uri;
+import android.widget.ImageView;
 import com.google.android.gms.common.internal.zzb;
 import com.google.android.gms.common.internal.zzu;
 import com.google.android.gms.internal.zzhd;
 import com.google.android.gms.internal.zzhe;
+import com.google.android.gms.internal.zzhf;
 import com.google.android.gms.internal.zzhg;
 import com.google.android.gms.internal.zzhg.zza;
+import java.lang.ref.WeakReference;
 
 public abstract class zza
 {
@@ -132,6 +136,136 @@ public abstract class zza
       Object[] arrayOfObject = new Object[1];
       arrayOfObject[0] = this.uri;
       return zzu.hashCode(arrayOfObject);
+    }
+  }
+
+  public static final class zzb extends zza
+  {
+    private WeakReference<ImageView> zzSp;
+
+    public zzb(ImageView paramImageView, int paramInt)
+    {
+      super(paramInt);
+      zzb.zzn(paramImageView);
+      this.zzSp = new WeakReference(paramImageView);
+    }
+
+    public zzb(ImageView paramImageView, Uri paramUri)
+    {
+      super(0);
+      zzb.zzn(paramImageView);
+      this.zzSp = new WeakReference(paramImageView);
+    }
+
+    private void zza(ImageView paramImageView, Drawable paramDrawable, boolean paramBoolean1, boolean paramBoolean2, boolean paramBoolean3)
+    {
+      if ((!paramBoolean2) && (!paramBoolean3));
+      for (int i = 1; (i != 0) && ((paramImageView instanceof zzhf)); i = 0)
+      {
+        int k = ((zzhf)paramImageView).zzlC();
+        if ((this.zzSi == 0) || (k != this.zzSi))
+          break;
+        return;
+      }
+      boolean bool = zzb(paramBoolean1, paramBoolean2);
+      if ((this.zzSj) && (paramDrawable != null));
+      for (Object localObject = paramDrawable.getConstantState().newDrawable(); ; localObject = paramDrawable)
+      {
+        if (bool)
+          localObject = zza(paramImageView.getDrawable(), (Drawable)localObject);
+        paramImageView.setImageDrawable((Drawable)localObject);
+        zzhf localzzhf;
+        Uri localUri;
+        if ((paramImageView instanceof zzhf))
+        {
+          localzzhf = (zzhf)paramImageView;
+          if (!paramBoolean3)
+            break label178;
+          localUri = this.zzSg.uri;
+          label136: localzzhf.zzi(localUri);
+          if (i == 0)
+            break label184;
+        }
+        label178: label184: for (int j = this.zzSi; ; j = 0)
+        {
+          localzzhf.zzaK(j);
+          if (!bool)
+            break;
+          ((zzhd)localObject).startTransition(250);
+          return;
+          localUri = null;
+          break label136;
+        }
+      }
+    }
+
+    public boolean equals(Object paramObject)
+    {
+      if (!(paramObject instanceof zzb))
+        return false;
+      if (this == paramObject)
+        return true;
+      zzb localzzb = (zzb)paramObject;
+      ImageView localImageView1 = (ImageView)this.zzSp.get();
+      ImageView localImageView2 = (ImageView)localzzb.zzSp.get();
+      if ((localImageView2 != null) && (localImageView1 != null) && (zzu.equal(localImageView2, localImageView1)));
+      for (boolean bool = true; ; bool = false)
+        return bool;
+    }
+
+    public int hashCode()
+    {
+      return 0;
+    }
+
+    protected void zza(Drawable paramDrawable, boolean paramBoolean1, boolean paramBoolean2, boolean paramBoolean3)
+    {
+      ImageView localImageView = (ImageView)this.zzSp.get();
+      if (localImageView != null)
+        zza(localImageView, paramDrawable, paramBoolean1, paramBoolean2, paramBoolean3);
+    }
+  }
+
+  public static final class zzc extends zza
+  {
+    private WeakReference<ImageManager.OnImageLoadedListener> zzSq;
+
+    public zzc(ImageManager.OnImageLoadedListener paramOnImageLoadedListener, Uri paramUri)
+    {
+      super(0);
+      zzb.zzn(paramOnImageLoadedListener);
+      this.zzSq = new WeakReference(paramOnImageLoadedListener);
+    }
+
+    public boolean equals(Object paramObject)
+    {
+      if (!(paramObject instanceof zzc))
+        return false;
+      if (this == paramObject)
+        return true;
+      zzc localzzc = (zzc)paramObject;
+      ImageManager.OnImageLoadedListener localOnImageLoadedListener1 = (ImageManager.OnImageLoadedListener)this.zzSq.get();
+      ImageManager.OnImageLoadedListener localOnImageLoadedListener2 = (ImageManager.OnImageLoadedListener)localzzc.zzSq.get();
+      if ((localOnImageLoadedListener2 != null) && (localOnImageLoadedListener1 != null) && (zzu.equal(localOnImageLoadedListener2, localOnImageLoadedListener1)) && (zzu.equal(localzzc.zzSg, this.zzSg)));
+      for (boolean bool = true; ; bool = false)
+        return bool;
+    }
+
+    public int hashCode()
+    {
+      Object[] arrayOfObject = new Object[1];
+      arrayOfObject[0] = this.zzSg;
+      return zzu.hashCode(arrayOfObject);
+    }
+
+    protected void zza(Drawable paramDrawable, boolean paramBoolean1, boolean paramBoolean2, boolean paramBoolean3)
+    {
+      if (!paramBoolean2)
+      {
+        ImageManager.OnImageLoadedListener localOnImageLoadedListener = (ImageManager.OnImageLoadedListener)this.zzSq.get();
+        if (localOnImageLoadedListener != null)
+          localOnImageLoadedListener.onImageLoaded(this.zzSg.uri, paramDrawable, paramBoolean3);
+      }
     }
   }
 }

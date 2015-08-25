@@ -2,6 +2,7 @@ package com.o3dr.android.client.apis.drone;
 
 import android.os.Bundle;
 import com.o3dr.android.client.Drone;
+import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.mavlink.MavlinkMessageWrapper;
 import com.o3dr.services.android.lib.model.action.Action;
 
@@ -19,6 +20,13 @@ public class ExperimentalApi
     Bundle localBundle = new Bundle();
     localBundle.putParcelable("extra_mavlink_message", paramMavlinkMessageWrapper);
     paramDrone.performAsyncAction(new Action("com.o3dr.services.android.action.SEND_MAVLINK_MESSAGE", localBundle));
+  }
+
+  public static void setROI(Drone paramDrone, LatLongAlt paramLatLongAlt)
+  {
+    Bundle localBundle = new Bundle();
+    localBundle.putParcelable("extra_set_roi_lat_long_alt", paramLatLongAlt);
+    paramDrone.performAsyncAction(new Action("com.o3dr.services.android.action.SET_ROI", localBundle));
   }
 
   public static void setRelay(Drone paramDrone, int paramInt, boolean paramBoolean)

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.graphics.drawable.DrawableWrapper;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -24,7 +25,7 @@ public class ListViewCompat extends ListView
   int mSelectionLeftPadding = 0;
   int mSelectionRightPadding = 0;
   int mSelectionTopPadding = 0;
-  private ListViewCompat.GateKeeperDrawable mSelector;
+  private GateKeeperDrawable mSelector;
   final Rect mSelectorRect = new Rect();
 
   public ListViewCompat(Context paramContext)
@@ -240,7 +241,7 @@ public class ListViewCompat extends ListView
   public void setSelector(Drawable paramDrawable)
   {
     if (paramDrawable != null);
-    for (ListViewCompat.GateKeeperDrawable localGateKeeperDrawable = new ListViewCompat.GateKeeperDrawable(paramDrawable); ; localGateKeeperDrawable = null)
+    for (GateKeeperDrawable localGateKeeperDrawable = new GateKeeperDrawable(paramDrawable); ; localGateKeeperDrawable = null)
     {
       this.mSelector = localGateKeeperDrawable;
       super.setSelector(this.mSelector);
@@ -276,6 +277,53 @@ public class ListViewCompat extends ListView
     Drawable localDrawable = getSelector();
     if ((localDrawable != null) && (shouldShowSelectorCompat()))
       localDrawable.setState(getDrawableState());
+  }
+
+  private static class GateKeeperDrawable extends DrawableWrapper
+  {
+    private boolean mEnabled = true;
+
+    public GateKeeperDrawable(Drawable paramDrawable)
+    {
+      super();
+    }
+
+    public void draw(Canvas paramCanvas)
+    {
+      if (this.mEnabled)
+        super.draw(paramCanvas);
+    }
+
+    void setEnabled(boolean paramBoolean)
+    {
+      this.mEnabled = paramBoolean;
+    }
+
+    public void setHotspot(float paramFloat1, float paramFloat2)
+    {
+      if (this.mEnabled)
+        super.setHotspot(paramFloat1, paramFloat2);
+    }
+
+    public void setHotspotBounds(int paramInt1, int paramInt2, int paramInt3, int paramInt4)
+    {
+      if (this.mEnabled)
+        super.setHotspotBounds(paramInt1, paramInt2, paramInt3, paramInt4);
+    }
+
+    public boolean setState(int[] paramArrayOfInt)
+    {
+      if (this.mEnabled)
+        return super.setState(paramArrayOfInt);
+      return false;
+    }
+
+    public boolean setVisible(boolean paramBoolean1, boolean paramBoolean2)
+    {
+      if (this.mEnabled)
+        return super.setVisible(paramBoolean1, paramBoolean2);
+      return false;
+    }
   }
 }
 

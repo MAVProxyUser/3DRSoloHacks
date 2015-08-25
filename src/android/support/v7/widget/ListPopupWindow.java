@@ -12,10 +12,13 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
+import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.appcompat.R.attr;
 import android.support.v7.appcompat.R.styleable;
 import android.support.v7.internal.widget.AppCompatPopupWindow;
+import android.support.v7.internal.widget.ListViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -61,7 +64,7 @@ public class ListPopupWindow
   private int mDropDownGravity = 0;
   private int mDropDownHeight = -2;
   private int mDropDownHorizontalOffset;
-  private ListPopupWindow.DropDownListView mDropDownList;
+  private DropDownListView mDropDownList;
   private Drawable mDropDownListHighlight;
   private int mDropDownVerticalOffset;
   private boolean mDropDownVerticalOffsetSet;
@@ -152,7 +155,7 @@ public class ListPopupWindow
       if (!this.mModal)
       {
         bool = true;
-        this.mDropDownList = new ListPopupWindow.DropDownListView(localContext, bool);
+        this.mDropDownList = new DropDownListView(localContext, bool);
         if (this.mDropDownListHighlight != null)
           this.mDropDownList.setSelector(this.mDropDownListHighlight);
         this.mDropDownList.setAdapter(this.mAdapter);
@@ -295,17 +298,23 @@ public class ListPopupWindow
 
   public void clearListSelection()
   {
-    ListPopupWindow.DropDownListView localDropDownListView = this.mDropDownList;
+    DropDownListView localDropDownListView = this.mDropDownList;
     if (localDropDownListView != null)
     {
-      ListPopupWindow.DropDownListView.access$502(localDropDownListView, true);
+      DropDownListView.access$502(localDropDownListView, true);
       localDropDownListView.requestLayout();
     }
   }
 
   public View.OnTouchListener createDragToOpenListener(View paramView)
   {
-    return new ListPopupWindow.1(this, paramView);
+    return new ForwardingListener(paramView)
+    {
+      public ListPopupWindow getPopup()
+      {
+        return ListPopupWindow.this;
+      }
+    };
   }
 
   public void dismiss()
@@ -461,7 +470,7 @@ public class ListPopupWindow
         k = this.mDropDownList.lookForSelectablePosition(0, true);
         break label88;
       }
-      label198: ListPopupWindow.DropDownListView.access$502(this.mDropDownList, false);
+      label198: DropDownListView.access$502(this.mDropDownList, false);
       if (!this.mDropDownList.onKeyDown(paramInt, paramKeyEvent))
         break label286;
       this.mPopup.setInputMethodMode(2);
@@ -536,7 +545,7 @@ public class ListPopupWindow
     {
       if (this.mItemClickListener != null)
       {
-        ListPopupWindow.DropDownListView localDropDownListView = this.mDropDownList;
+        DropDownListView localDropDownListView = this.mDropDownList;
         View localView = localDropDownListView.getChildAt(paramInt - localDropDownListView.getFirstVisiblePosition());
         ListAdapter localListAdapter = localDropDownListView.getAdapter();
         this.mItemClickListener.onItemClick(localDropDownListView, localView, paramInt, localListAdapter.getItemId(paramInt));
@@ -673,10 +682,10 @@ public class ListPopupWindow
 
   public void setSelection(int paramInt)
   {
-    ListPopupWindow.DropDownListView localDropDownListView = this.mDropDownList;
+    DropDownListView localDropDownListView = this.mDropDownList;
     if ((isShowing()) && (localDropDownListView != null))
     {
-      ListPopupWindow.DropDownListView.access$502(localDropDownListView, false);
+      DropDownListView.access$502(localDropDownListView, false);
       localDropDownListView.setSelection(paramInt);
       if ((Build.VERSION.SDK_INT >= 11) && (localDropDownListView.getChoiceMode() != 0))
         localDropDownListView.setItemChecked(paramInt, true);
@@ -809,6 +818,133 @@ public class ListPopupWindow
       m = 0;
       break label267;
       label478: bool1 = false;
+    }
+  }
+
+  private static class DropDownListView extends ListViewCompat
+  {
+    private ViewPropertyAnimatorCompat mClickAnimation;
+    private boolean mDrawsInPressedState;
+    private boolean mHijackFocus;
+    private boolean mListSelectionHidden;
+    private ListViewAutoScrollHelper mScrollHelper;
+
+    public DropDownListView(Context paramContext, boolean paramBoolean)
+    {
+      super(null, R.attr.dropDownListViewStyle);
+      this.mHijackFocus = paramBoolean;
+      setCacheColorHint(0);
+    }
+
+    private void clearPressedItem()
+    {
+      this.mDrawsInPressedState = false;
+      setPressed(false);
+      drawableStateChanged();
+      if (this.mClickAnimation != null)
+      {
+        this.mClickAnimation.cancel();
+        this.mClickAnimation = null;
+      }
+    }
+
+    private void clickPressedItem(View paramView, int paramInt)
+    {
+      performItemClick(paramView, paramInt, getItemIdAtPosition(paramInt));
+    }
+
+    private void setPressedItem(View paramView, int paramInt, float paramFloat1, float paramFloat2)
+    {
+      this.mDrawsInPressedState = true;
+      setPressed(true);
+      layoutChildren();
+      setSelection(paramInt);
+      positionSelectorLikeTouchCompat(paramInt, paramView, paramFloat1, paramFloat2);
+      setSelectorEnabled(false);
+      refreshDrawableState();
+    }
+
+    public boolean hasFocus()
+    {
+      return (this.mHijackFocus) || (super.hasFocus());
+    }
+
+    public boolean hasWindowFocus()
+    {
+      return (this.mHijackFocus) || (super.hasWindowFocus());
+    }
+
+    public boolean isFocused()
+    {
+      return (this.mHijackFocus) || (super.isFocused());
+    }
+
+    public boolean isInTouchMode()
+    {
+      return ((this.mHijackFocus) && (this.mListSelectionHidden)) || (super.isInTouchMode());
+    }
+
+    public boolean onForwardedEvent(MotionEvent paramMotionEvent, int paramInt)
+    {
+      boolean bool = true;
+      int i = MotionEventCompat.getActionMasked(paramMotionEvent);
+      int j = 0;
+      switch (i)
+      {
+      default:
+        if ((!bool) || (j != 0))
+          clearPressedItem();
+        if (bool)
+        {
+          if (this.mScrollHelper == null)
+            this.mScrollHelper = new ListViewAutoScrollHelper(this);
+          this.mScrollHelper.setEnabled(true);
+          this.mScrollHelper.onTouch(this, paramMotionEvent);
+        }
+        break;
+      case 3:
+      case 1:
+      case 2:
+      }
+      while (this.mScrollHelper == null)
+      {
+        return bool;
+        j = 0;
+        bool = false;
+        break;
+        bool = false;
+        int k = paramMotionEvent.findPointerIndex(paramInt);
+        if (k < 0)
+        {
+          j = 0;
+          bool = false;
+          break;
+        }
+        int m = (int)paramMotionEvent.getX(k);
+        int n = (int)paramMotionEvent.getY(k);
+        int i1 = pointToPosition(m, n);
+        if (i1 == -1)
+        {
+          j = 1;
+          break;
+        }
+        View localView = getChildAt(i1 - getFirstVisiblePosition());
+        setPressedItem(localView, i1, m, n);
+        bool = true;
+        j = 0;
+        if (i != 1)
+          break;
+        clickPressedItem(localView, i1);
+        j = 0;
+        break;
+      }
+      this.mScrollHelper.setEnabled(false);
+      return bool;
+    }
+
+    protected boolean touchModeDrawsInPressedStateCompat()
+    {
+      return (this.mDrawsInPressedState) || (super.touchModeDrawsInPressedStateCompat());
     }
   }
 

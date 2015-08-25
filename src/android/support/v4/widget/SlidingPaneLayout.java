@@ -15,8 +15,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import android.support.annotation.DrawableRes;
+import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,13 +30,17 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.ViewParent;
+import android.view.accessibility.AccessibilityEvent;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class SlidingPaneLayout extends ViewGroup
 {
   private static final int DEFAULT_FADE_COLOR = -858993460;
   private static final int DEFAULT_OVERHANG_SIZE = 32;
-  static final SlidingPanelLayoutImpl IMPL = new SlidingPaneLayout.SlidingPanelLayoutImplBase();
+  static final SlidingPanelLayoutImpl IMPL = new SlidingPanelLayoutImplBase();
   private static final int MIN_FLING_VELOCITY = 400;
   private static final String TAG = "SlidingPaneLayout";
   private boolean mCanSlide;
@@ -63,12 +69,12 @@ public class SlidingPaneLayout extends ViewGroup
     int i = Build.VERSION.SDK_INT;
     if (i >= 17)
     {
-      IMPL = new SlidingPaneLayout.SlidingPanelLayoutImplJBMR1();
+      IMPL = new SlidingPanelLayoutImplJBMR1();
       return;
     }
     if (i >= 16)
     {
-      IMPL = new SlidingPaneLayout.SlidingPanelLayoutImplJB();
+      IMPL = new SlidingPanelLayoutImplJB();
       return;
     }
   }
@@ -90,9 +96,9 @@ public class SlidingPaneLayout extends ViewGroup
     this.mOverhangSize = ((int)(0.5F + 32.0F * f));
     ViewConfiguration.get(paramContext);
     setWillNotDraw(false);
-    ViewCompat.setAccessibilityDelegate(this, new SlidingPaneLayout.AccessibilityDelegate(this));
+    ViewCompat.setAccessibilityDelegate(this, new AccessibilityDelegate());
     ViewCompat.setImportantForAccessibility(this, 1);
-    this.mDragHelper = ViewDragHelper.create(this, 0.5F, new SlidingPaneLayout.DragHelperCallback(this, null));
+    this.mDragHelper = ViewDragHelper.create(this, 0.5F, new DragHelperCallback(null));
     this.mDragHelper.setMinVelocity(400.0F * f);
   }
 
@@ -1176,6 +1182,78 @@ public class SlidingPaneLayout extends ViewGroup
     }
   }
 
+  class AccessibilityDelegate extends AccessibilityDelegateCompat
+  {
+    private final Rect mTmpRect = new Rect();
+
+    AccessibilityDelegate()
+    {
+    }
+
+    private void copyNodeInfoNoChildren(AccessibilityNodeInfoCompat paramAccessibilityNodeInfoCompat1, AccessibilityNodeInfoCompat paramAccessibilityNodeInfoCompat2)
+    {
+      Rect localRect = this.mTmpRect;
+      paramAccessibilityNodeInfoCompat2.getBoundsInParent(localRect);
+      paramAccessibilityNodeInfoCompat1.setBoundsInParent(localRect);
+      paramAccessibilityNodeInfoCompat2.getBoundsInScreen(localRect);
+      paramAccessibilityNodeInfoCompat1.setBoundsInScreen(localRect);
+      paramAccessibilityNodeInfoCompat1.setVisibleToUser(paramAccessibilityNodeInfoCompat2.isVisibleToUser());
+      paramAccessibilityNodeInfoCompat1.setPackageName(paramAccessibilityNodeInfoCompat2.getPackageName());
+      paramAccessibilityNodeInfoCompat1.setClassName(paramAccessibilityNodeInfoCompat2.getClassName());
+      paramAccessibilityNodeInfoCompat1.setContentDescription(paramAccessibilityNodeInfoCompat2.getContentDescription());
+      paramAccessibilityNodeInfoCompat1.setEnabled(paramAccessibilityNodeInfoCompat2.isEnabled());
+      paramAccessibilityNodeInfoCompat1.setClickable(paramAccessibilityNodeInfoCompat2.isClickable());
+      paramAccessibilityNodeInfoCompat1.setFocusable(paramAccessibilityNodeInfoCompat2.isFocusable());
+      paramAccessibilityNodeInfoCompat1.setFocused(paramAccessibilityNodeInfoCompat2.isFocused());
+      paramAccessibilityNodeInfoCompat1.setAccessibilityFocused(paramAccessibilityNodeInfoCompat2.isAccessibilityFocused());
+      paramAccessibilityNodeInfoCompat1.setSelected(paramAccessibilityNodeInfoCompat2.isSelected());
+      paramAccessibilityNodeInfoCompat1.setLongClickable(paramAccessibilityNodeInfoCompat2.isLongClickable());
+      paramAccessibilityNodeInfoCompat1.addAction(paramAccessibilityNodeInfoCompat2.getActions());
+      paramAccessibilityNodeInfoCompat1.setMovementGranularities(paramAccessibilityNodeInfoCompat2.getMovementGranularities());
+    }
+
+    public boolean filter(View paramView)
+    {
+      return SlidingPaneLayout.this.isDimmed(paramView);
+    }
+
+    public void onInitializeAccessibilityEvent(View paramView, AccessibilityEvent paramAccessibilityEvent)
+    {
+      super.onInitializeAccessibilityEvent(paramView, paramAccessibilityEvent);
+      paramAccessibilityEvent.setClassName(SlidingPaneLayout.class.getName());
+    }
+
+    public void onInitializeAccessibilityNodeInfo(View paramView, AccessibilityNodeInfoCompat paramAccessibilityNodeInfoCompat)
+    {
+      AccessibilityNodeInfoCompat localAccessibilityNodeInfoCompat = AccessibilityNodeInfoCompat.obtain(paramAccessibilityNodeInfoCompat);
+      super.onInitializeAccessibilityNodeInfo(paramView, localAccessibilityNodeInfoCompat);
+      copyNodeInfoNoChildren(paramAccessibilityNodeInfoCompat, localAccessibilityNodeInfoCompat);
+      localAccessibilityNodeInfoCompat.recycle();
+      paramAccessibilityNodeInfoCompat.setClassName(SlidingPaneLayout.class.getName());
+      paramAccessibilityNodeInfoCompat.setSource(paramView);
+      ViewParent localViewParent = ViewCompat.getParentForAccessibility(paramView);
+      if ((localViewParent instanceof View))
+        paramAccessibilityNodeInfoCompat.setParent((View)localViewParent);
+      int i = SlidingPaneLayout.this.getChildCount();
+      for (int j = 0; j < i; j++)
+      {
+        View localView = SlidingPaneLayout.this.getChildAt(j);
+        if ((!filter(localView)) && (localView.getVisibility() == 0))
+        {
+          ViewCompat.setImportantForAccessibility(localView, 1);
+          paramAccessibilityNodeInfoCompat.addChild(localView);
+        }
+      }
+    }
+
+    public boolean onRequestSendAccessibilityEvent(ViewGroup paramViewGroup, View paramView, AccessibilityEvent paramAccessibilityEvent)
+    {
+      if (!filter(paramView))
+        return super.onRequestSendAccessibilityEvent(paramViewGroup, paramView, paramAccessibilityEvent);
+      return false;
+    }
+  }
+
   private class DisableLayerRunnable
     implements Runnable
   {
@@ -1195,6 +1273,100 @@ public class SlidingPaneLayout extends ViewGroup
         SlidingPaneLayout.this.invalidateChildRegion(this.mChildView);
       }
       SlidingPaneLayout.this.mPostedRunnables.remove(this);
+    }
+  }
+
+  private class DragHelperCallback extends ViewDragHelper.Callback
+  {
+    private DragHelperCallback()
+    {
+    }
+
+    public int clampViewPositionHorizontal(View paramView, int paramInt1, int paramInt2)
+    {
+      SlidingPaneLayout.LayoutParams localLayoutParams = (SlidingPaneLayout.LayoutParams)SlidingPaneLayout.this.mSlideableView.getLayoutParams();
+      if (SlidingPaneLayout.this.isLayoutRtlSupport())
+      {
+        int k = SlidingPaneLayout.this.getWidth() - (SlidingPaneLayout.this.getPaddingRight() + localLayoutParams.rightMargin + SlidingPaneLayout.this.mSlideableView.getWidth());
+        int m = k - SlidingPaneLayout.this.mSlideRange;
+        return Math.max(Math.min(paramInt1, k), m);
+      }
+      int i = SlidingPaneLayout.this.getPaddingLeft() + localLayoutParams.leftMargin;
+      int j = i + SlidingPaneLayout.this.mSlideRange;
+      return Math.min(Math.max(paramInt1, i), j);
+    }
+
+    public int clampViewPositionVertical(View paramView, int paramInt1, int paramInt2)
+    {
+      return paramView.getTop();
+    }
+
+    public int getViewHorizontalDragRange(View paramView)
+    {
+      return SlidingPaneLayout.this.mSlideRange;
+    }
+
+    public void onEdgeDragStarted(int paramInt1, int paramInt2)
+    {
+      SlidingPaneLayout.this.mDragHelper.captureChildView(SlidingPaneLayout.this.mSlideableView, paramInt2);
+    }
+
+    public void onViewCaptured(View paramView, int paramInt)
+    {
+      SlidingPaneLayout.this.setAllChildrenVisible();
+    }
+
+    public void onViewDragStateChanged(int paramInt)
+    {
+      if (SlidingPaneLayout.this.mDragHelper.getViewDragState() == 0)
+      {
+        if (SlidingPaneLayout.this.mSlideOffset == 0.0F)
+        {
+          SlidingPaneLayout.this.updateObscuredViewsVisibility(SlidingPaneLayout.this.mSlideableView);
+          SlidingPaneLayout.this.dispatchOnPanelClosed(SlidingPaneLayout.this.mSlideableView);
+          SlidingPaneLayout.access$502(SlidingPaneLayout.this, false);
+        }
+      }
+      else
+        return;
+      SlidingPaneLayout.this.dispatchOnPanelOpened(SlidingPaneLayout.this.mSlideableView);
+      SlidingPaneLayout.access$502(SlidingPaneLayout.this, true);
+    }
+
+    public void onViewPositionChanged(View paramView, int paramInt1, int paramInt2, int paramInt3, int paramInt4)
+    {
+      SlidingPaneLayout.this.onPanelDragged(paramInt1);
+      SlidingPaneLayout.this.invalidate();
+    }
+
+    public void onViewReleased(View paramView, float paramFloat1, float paramFloat2)
+    {
+      SlidingPaneLayout.LayoutParams localLayoutParams = (SlidingPaneLayout.LayoutParams)paramView.getLayoutParams();
+      int i;
+      if (SlidingPaneLayout.this.isLayoutRtlSupport())
+      {
+        int j = SlidingPaneLayout.this.getPaddingRight() + localLayoutParams.rightMargin;
+        if ((paramFloat1 < 0.0F) || ((paramFloat1 == 0.0F) && (SlidingPaneLayout.this.mSlideOffset > 0.5F)))
+          j += SlidingPaneLayout.this.mSlideRange;
+        int k = SlidingPaneLayout.this.mSlideableView.getWidth();
+        i = SlidingPaneLayout.this.getWidth() - j - k;
+      }
+      while (true)
+      {
+        SlidingPaneLayout.this.mDragHelper.settleCapturedViewAt(i, paramView.getTop());
+        SlidingPaneLayout.this.invalidate();
+        return;
+        i = SlidingPaneLayout.this.getPaddingLeft() + localLayoutParams.leftMargin;
+        if ((paramFloat1 > 0.0F) || ((paramFloat1 == 0.0F) && (SlidingPaneLayout.this.mSlideOffset > 0.5F)))
+          i += SlidingPaneLayout.this.mSlideRange;
+      }
+    }
+
+    public boolean tryCaptureView(View paramView, int paramInt)
+    {
+      if (SlidingPaneLayout.this.mIsUnableToDrag)
+        return false;
+      return ((SlidingPaneLayout.LayoutParams)paramView.getLayoutParams()).slideable;
     }
   }
 
@@ -1294,9 +1466,92 @@ public class SlidingPaneLayout extends ViewGroup
     }
   }
 
+  public static class SimplePanelSlideListener
+    implements SlidingPaneLayout.PanelSlideListener
+  {
+    public void onPanelClosed(View paramView)
+    {
+    }
+
+    public void onPanelOpened(View paramView)
+    {
+    }
+
+    public void onPanelSlide(View paramView, float paramFloat)
+    {
+    }
+  }
+
   static abstract interface SlidingPanelLayoutImpl
   {
     public abstract void invalidateChildRegion(SlidingPaneLayout paramSlidingPaneLayout, View paramView);
+  }
+
+  static class SlidingPanelLayoutImplBase
+    implements SlidingPaneLayout.SlidingPanelLayoutImpl
+  {
+    public void invalidateChildRegion(SlidingPaneLayout paramSlidingPaneLayout, View paramView)
+    {
+      ViewCompat.postInvalidateOnAnimation(paramSlidingPaneLayout, paramView.getLeft(), paramView.getTop(), paramView.getRight(), paramView.getBottom());
+    }
+  }
+
+  static class SlidingPanelLayoutImplJB extends SlidingPaneLayout.SlidingPanelLayoutImplBase
+  {
+    private Method mGetDisplayList;
+    private Field mRecreateDisplayList;
+
+    SlidingPanelLayoutImplJB()
+    {
+      try
+      {
+        this.mGetDisplayList = View.class.getDeclaredMethod("getDisplayList", (Class[])null);
+      }
+      catch (NoSuchMethodException localNoSuchMethodException)
+      {
+        try
+        {
+          while (true)
+          {
+            this.mRecreateDisplayList = View.class.getDeclaredField("mRecreateDisplayList");
+            this.mRecreateDisplayList.setAccessible(true);
+            return;
+            localNoSuchMethodException = localNoSuchMethodException;
+            Log.e("SlidingPaneLayout", "Couldn't fetch getDisplayList method; dimming won't work right.", localNoSuchMethodException);
+          }
+        }
+        catch (NoSuchFieldException localNoSuchFieldException)
+        {
+          Log.e("SlidingPaneLayout", "Couldn't fetch mRecreateDisplayList field; dimming will be slow.", localNoSuchFieldException);
+        }
+      }
+    }
+
+    public void invalidateChildRegion(SlidingPaneLayout paramSlidingPaneLayout, View paramView)
+    {
+      if ((this.mGetDisplayList != null) && (this.mRecreateDisplayList != null))
+        try
+        {
+          this.mRecreateDisplayList.setBoolean(paramView, true);
+          this.mGetDisplayList.invoke(paramView, (Object[])null);
+          super.invalidateChildRegion(paramSlidingPaneLayout, paramView);
+          return;
+        }
+        catch (Exception localException)
+        {
+          while (true)
+            Log.e("SlidingPaneLayout", "Error refreshing display list state", localException);
+        }
+      paramView.invalidate();
+    }
+  }
+
+  static class SlidingPanelLayoutImplJBMR1 extends SlidingPaneLayout.SlidingPanelLayoutImplBase
+  {
+    public void invalidateChildRegion(SlidingPaneLayout paramSlidingPaneLayout, View paramView)
+    {
+      ViewCompat.setLayerPaint(paramView, ((SlidingPaneLayout.LayoutParams)paramView.getLayoutParams()).dimPaint);
+    }
   }
 }
 

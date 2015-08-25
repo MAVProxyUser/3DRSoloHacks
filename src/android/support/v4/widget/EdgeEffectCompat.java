@@ -6,19 +6,19 @@ import android.os.Build.VERSION;
 
 public class EdgeEffectCompat
 {
-  private static final EdgeEffectImpl IMPL = new EdgeEffectCompat.BaseEdgeEffectImpl();
+  private static final EdgeEffectImpl IMPL = new BaseEdgeEffectImpl();
   private Object mEdgeEffect;
 
   static
   {
     if (Build.VERSION.SDK_INT >= 21)
     {
-      IMPL = new EdgeEffectCompat.EdgeEffectLollipopImpl();
+      IMPL = new EdgeEffectLollipopImpl();
       return;
     }
     if (Build.VERSION.SDK_INT >= 14)
     {
-      IMPL = new EdgeEffectCompat.EdgeEffectIcsImpl();
+      IMPL = new EdgeEffectIcsImpl();
       return;
     }
   }
@@ -68,6 +68,102 @@ public class EdgeEffectCompat
     IMPL.setSize(this.mEdgeEffect, paramInt1, paramInt2);
   }
 
+  static class BaseEdgeEffectImpl
+    implements EdgeEffectCompat.EdgeEffectImpl
+  {
+    public boolean draw(Object paramObject, Canvas paramCanvas)
+    {
+      return false;
+    }
+
+    public void finish(Object paramObject)
+    {
+    }
+
+    public boolean isFinished(Object paramObject)
+    {
+      return true;
+    }
+
+    public Object newEdgeEffect(Context paramContext)
+    {
+      return null;
+    }
+
+    public boolean onAbsorb(Object paramObject, int paramInt)
+    {
+      return false;
+    }
+
+    public boolean onPull(Object paramObject, float paramFloat)
+    {
+      return false;
+    }
+
+    public boolean onPull(Object paramObject, float paramFloat1, float paramFloat2)
+    {
+      return false;
+    }
+
+    public boolean onRelease(Object paramObject)
+    {
+      return false;
+    }
+
+    public void setSize(Object paramObject, int paramInt1, int paramInt2)
+    {
+    }
+  }
+
+  static class EdgeEffectIcsImpl
+    implements EdgeEffectCompat.EdgeEffectImpl
+  {
+    public boolean draw(Object paramObject, Canvas paramCanvas)
+    {
+      return EdgeEffectCompatIcs.draw(paramObject, paramCanvas);
+    }
+
+    public void finish(Object paramObject)
+    {
+      EdgeEffectCompatIcs.finish(paramObject);
+    }
+
+    public boolean isFinished(Object paramObject)
+    {
+      return EdgeEffectCompatIcs.isFinished(paramObject);
+    }
+
+    public Object newEdgeEffect(Context paramContext)
+    {
+      return EdgeEffectCompatIcs.newEdgeEffect(paramContext);
+    }
+
+    public boolean onAbsorb(Object paramObject, int paramInt)
+    {
+      return EdgeEffectCompatIcs.onAbsorb(paramObject, paramInt);
+    }
+
+    public boolean onPull(Object paramObject, float paramFloat)
+    {
+      return EdgeEffectCompatIcs.onPull(paramObject, paramFloat);
+    }
+
+    public boolean onPull(Object paramObject, float paramFloat1, float paramFloat2)
+    {
+      return EdgeEffectCompatIcs.onPull(paramObject, paramFloat1);
+    }
+
+    public boolean onRelease(Object paramObject)
+    {
+      return EdgeEffectCompatIcs.onRelease(paramObject);
+    }
+
+    public void setSize(Object paramObject, int paramInt1, int paramInt2)
+    {
+      EdgeEffectCompatIcs.setSize(paramObject, paramInt1, paramInt2);
+    }
+  }
+
   static abstract interface EdgeEffectImpl
   {
     public abstract boolean draw(Object paramObject, Canvas paramCanvas);
@@ -87,6 +183,14 @@ public class EdgeEffectCompat
     public abstract boolean onRelease(Object paramObject);
 
     public abstract void setSize(Object paramObject, int paramInt1, int paramInt2);
+  }
+
+  static class EdgeEffectLollipopImpl extends EdgeEffectCompat.EdgeEffectIcsImpl
+  {
+    public boolean onPull(Object paramObject, float paramFloat1, float paramFloat2)
+    {
+      return EdgeEffectCompatLollipop.onPull(paramObject, paramFloat1, paramFloat2);
+    }
   }
 }
 

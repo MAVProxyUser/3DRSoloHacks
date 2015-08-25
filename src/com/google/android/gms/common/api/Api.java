@@ -82,6 +82,22 @@ public final class Api<O extends ApiOptions>
 
   public static abstract interface ApiOptions
   {
+    public static abstract interface HasOptions extends Api.ApiOptions
+    {
+    }
+
+    public static final class NoOptions
+      implements Api.ApiOptions.NotRequiredOptions
+    {
+    }
+
+    public static abstract interface NotRequiredOptions extends Api.ApiOptions
+    {
+    }
+
+    public static abstract interface Optional extends Api.ApiOptions.HasOptions, Api.ApiOptions.NotRequiredOptions
+    {
+    }
   }
 
   public static abstract interface zza

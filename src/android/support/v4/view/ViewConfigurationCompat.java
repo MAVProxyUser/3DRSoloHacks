@@ -5,23 +5,23 @@ import android.view.ViewConfiguration;
 
 public class ViewConfigurationCompat
 {
-  static final ViewConfigurationVersionImpl IMPL = new ViewConfigurationCompat.BaseViewConfigurationVersionImpl();
+  static final ViewConfigurationVersionImpl IMPL = new BaseViewConfigurationVersionImpl();
 
   static
   {
     if (Build.VERSION.SDK_INT >= 14)
     {
-      IMPL = new ViewConfigurationCompat.IcsViewConfigurationVersionImpl();
+      IMPL = new IcsViewConfigurationVersionImpl();
       return;
     }
     if (Build.VERSION.SDK_INT >= 11)
     {
-      IMPL = new ViewConfigurationCompat.HoneycombViewConfigurationVersionImpl();
+      IMPL = new HoneycombViewConfigurationVersionImpl();
       return;
     }
     if (Build.VERSION.SDK_INT >= 8)
     {
-      IMPL = new ViewConfigurationCompat.FroyoViewConfigurationVersionImpl();
+      IMPL = new FroyoViewConfigurationVersionImpl();
       return;
     }
   }
@@ -34,6 +34,44 @@ public class ViewConfigurationCompat
   public static boolean hasPermanentMenuKey(ViewConfiguration paramViewConfiguration)
   {
     return IMPL.hasPermanentMenuKey(paramViewConfiguration);
+  }
+
+  static class BaseViewConfigurationVersionImpl
+    implements ViewConfigurationCompat.ViewConfigurationVersionImpl
+  {
+    public int getScaledPagingTouchSlop(ViewConfiguration paramViewConfiguration)
+    {
+      return paramViewConfiguration.getScaledTouchSlop();
+    }
+
+    public boolean hasPermanentMenuKey(ViewConfiguration paramViewConfiguration)
+    {
+      return true;
+    }
+  }
+
+  static class FroyoViewConfigurationVersionImpl extends ViewConfigurationCompat.BaseViewConfigurationVersionImpl
+  {
+    public int getScaledPagingTouchSlop(ViewConfiguration paramViewConfiguration)
+    {
+      return ViewConfigurationCompatFroyo.getScaledPagingTouchSlop(paramViewConfiguration);
+    }
+  }
+
+  static class HoneycombViewConfigurationVersionImpl extends ViewConfigurationCompat.FroyoViewConfigurationVersionImpl
+  {
+    public boolean hasPermanentMenuKey(ViewConfiguration paramViewConfiguration)
+    {
+      return false;
+    }
+  }
+
+  static class IcsViewConfigurationVersionImpl extends ViewConfigurationCompat.HoneycombViewConfigurationVersionImpl
+  {
+    public boolean hasPermanentMenuKey(ViewConfiguration paramViewConfiguration)
+    {
+      return ViewConfigurationCompatICS.hasPermanentMenuKey(paramViewConfiguration);
+    }
   }
 
   static abstract interface ViewConfigurationVersionImpl

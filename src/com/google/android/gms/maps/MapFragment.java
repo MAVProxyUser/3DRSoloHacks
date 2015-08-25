@@ -8,14 +8,27 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.internal.zzv;
+import com.google.android.gms.dynamic.zza;
+import com.google.android.gms.dynamic.zzd;
+import com.google.android.gms.dynamic.zze;
+import com.google.android.gms.dynamic.zzf;
 import com.google.android.gms.maps.internal.IGoogleMapDelegate;
 import com.google.android.gms.maps.internal.IMapFragmentDelegate;
+import com.google.android.gms.maps.internal.MapLifecycleDelegate;
+import com.google.android.gms.maps.internal.zzc;
+import com.google.android.gms.maps.internal.zzm.zza;
+import com.google.android.gms.maps.internal.zzx;
+import com.google.android.gms.maps.internal.zzy;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class MapFragment extends Fragment
 {
-  private final MapFragment.zzb zzatX = new MapFragment.zzb(this);
+  private final zzb zzatX = new zzb(this);
   private GoogleMap zzatY;
 
   public static MapFragment newInstance()
@@ -72,7 +85,7 @@ public class MapFragment extends Fragment
   public void onAttach(Activity paramActivity)
   {
     super.onAttach(paramActivity);
-    MapFragment.zzb.zza(this.zzatX, paramActivity);
+    zzb.zza(this.zzatX, paramActivity);
   }
 
   public void onCreate(Bundle paramBundle)
@@ -103,7 +116,7 @@ public class MapFragment extends Fragment
   public void onInflate(Activity paramActivity, AttributeSet paramAttributeSet, Bundle paramBundle)
   {
     super.onInflate(paramActivity, paramAttributeSet, paramBundle);
-    MapFragment.zzb.zza(this.zzatX, paramActivity);
+    zzb.zza(this.zzatX, paramActivity);
     GoogleMapOptions localGoogleMapOptions = GoogleMapOptions.createFromAttributes(paramActivity, paramAttributeSet);
     Bundle localBundle = new Bundle();
     localBundle.putParcelable("MapOptions", localGoogleMapOptions);
@@ -146,7 +159,239 @@ public class MapFragment extends Fragment
     this.zzatX.zztD();
     if (this.zzatX.zzou() == null)
       return null;
-    return ((MapFragment.zza)this.zzatX.zzou()).zztC();
+    return ((zza)this.zzatX.zzou()).zztC();
+  }
+
+  static class zza
+    implements MapLifecycleDelegate
+  {
+    private final Fragment zzacp;
+    private final IMapFragmentDelegate zzatZ;
+
+    public zza(Fragment paramFragment, IMapFragmentDelegate paramIMapFragmentDelegate)
+    {
+      this.zzatZ = ((IMapFragmentDelegate)zzv.zzr(paramIMapFragmentDelegate));
+      this.zzacp = ((Fragment)zzv.zzr(paramFragment));
+    }
+
+    public void getMapAsync(final OnMapReadyCallback paramOnMapReadyCallback)
+    {
+      try
+      {
+        this.zzatZ.getMapAsync(new zzm.zza()
+        {
+          public void zza(IGoogleMapDelegate paramAnonymousIGoogleMapDelegate)
+            throws RemoteException
+          {
+            paramOnMapReadyCallback.onMapReady(new GoogleMap(paramAnonymousIGoogleMapDelegate));
+          }
+        });
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onCreate(Bundle paramBundle)
+    {
+      if (paramBundle == null);
+      try
+      {
+        paramBundle = new Bundle();
+        Bundle localBundle = this.zzacp.getArguments();
+        if ((localBundle != null) && (localBundle.containsKey("MapOptions")))
+          zzx.zza(paramBundle, "MapOptions", localBundle.getParcelable("MapOptions"));
+        this.zzatZ.onCreate(paramBundle);
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
+    {
+      try
+      {
+        zzd localzzd = this.zzatZ.onCreateView(zze.zzt(paramLayoutInflater), zze.zzt(paramViewGroup), paramBundle);
+        return (View)zze.zzg(localzzd);
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onDestroy()
+    {
+      try
+      {
+        this.zzatZ.onDestroy();
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onDestroyView()
+    {
+      try
+      {
+        this.zzatZ.onDestroyView();
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onInflate(Activity paramActivity, Bundle paramBundle1, Bundle paramBundle2)
+    {
+      GoogleMapOptions localGoogleMapOptions = (GoogleMapOptions)paramBundle1.getParcelable("MapOptions");
+      try
+      {
+        this.zzatZ.onInflate(zze.zzt(paramActivity), localGoogleMapOptions, paramBundle2);
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onLowMemory()
+    {
+      try
+      {
+        this.zzatZ.onLowMemory();
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onPause()
+    {
+      try
+      {
+        this.zzatZ.onPause();
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onResume()
+    {
+      try
+      {
+        this.zzatZ.onResume();
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onSaveInstanceState(Bundle paramBundle)
+    {
+      try
+      {
+        this.zzatZ.onSaveInstanceState(paramBundle);
+        return;
+      }
+      catch (RemoteException localRemoteException)
+      {
+        throw new RuntimeRemoteException(localRemoteException);
+      }
+    }
+
+    public void onStart()
+    {
+    }
+
+    public void onStop()
+    {
+    }
+
+    public IMapFragmentDelegate zztC()
+    {
+      return this.zzatZ;
+    }
+  }
+
+  static class zzb extends zza<MapFragment.zza>
+  {
+    private final Fragment zzacp;
+    protected zzf<MapFragment.zza> zzauc;
+    private final List<OnMapReadyCallback> zzaud = new ArrayList();
+    private Activity zzpf;
+
+    zzb(Fragment paramFragment)
+    {
+      this.zzacp = paramFragment;
+    }
+
+    private void setActivity(Activity paramActivity)
+    {
+      this.zzpf = paramActivity;
+      zztD();
+    }
+
+    public void getMapAsync(OnMapReadyCallback paramOnMapReadyCallback)
+    {
+      if (zzou() != null)
+      {
+        ((MapFragment.zza)zzou()).getMapAsync(paramOnMapReadyCallback);
+        return;
+      }
+      this.zzaud.add(paramOnMapReadyCallback);
+    }
+
+    protected void zza(zzf<MapFragment.zza> paramzzf)
+    {
+      this.zzauc = paramzzf;
+      zztD();
+    }
+
+    public void zztD()
+    {
+      if ((this.zzpf != null) && (this.zzauc != null) && (zzou() == null))
+        try
+        {
+          MapsInitializer.initialize(this.zzpf);
+          IMapFragmentDelegate localIMapFragmentDelegate = zzy.zzah(this.zzpf).zzk(zze.zzt(this.zzpf));
+          if (localIMapFragmentDelegate == null)
+            return;
+          this.zzauc.zza(new MapFragment.zza(this.zzacp, localIMapFragmentDelegate));
+          Iterator localIterator = this.zzaud.iterator();
+          while (localIterator.hasNext())
+          {
+            OnMapReadyCallback localOnMapReadyCallback = (OnMapReadyCallback)localIterator.next();
+            ((MapFragment.zza)zzou()).getMapAsync(localOnMapReadyCallback);
+          }
+        }
+        catch (RemoteException localRemoteException)
+        {
+          throw new RuntimeRemoteException(localRemoteException);
+          this.zzaud.clear();
+          return;
+        }
+        catch (GooglePlayServicesNotAvailableException localGooglePlayServicesNotAvailableException)
+        {
+        }
+    }
   }
 }
 

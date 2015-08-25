@@ -15,7 +15,6 @@ import android.os.RemoteException;
 import android.util.Log;
 import com.o3dr.android.client.interfaces.TowerListener;
 import com.o3dr.android.client.utils.InstallServiceDialog;
-import com.o3dr.android.client.utils.UpdateServiceDialog;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.model.IDroidPlannerServices;
 import com.o3dr.services.android.lib.model.IDroidPlannerServices.Stub;
@@ -42,7 +41,7 @@ public class ControlTower
       ControlTower.access$102(ControlTower.this, IDroidPlannerServices.Stub.asInterface(paramAnonymousIBinder));
       try
       {
-        if (ControlTower.this.o3drServices.getApiVersionCode() < 20214)
+        if (ControlTower.this.o3drServices.getApiVersionCode() < 20216)
         {
           ControlTower.access$102(ControlTower.this, null);
           ControlTower.this.promptFor3DRServicesUpdate();
@@ -84,12 +83,12 @@ public class ControlTower
 
   private void promptFor3DRServicesInstall()
   {
-    this.context.startActivity(new Intent(this.context, InstallServiceDialog.class).addFlags(268435456));
+    this.context.startActivity(new Intent(this.context, InstallServiceDialog.class).addFlags(268435456).putExtra("extra_requirement", 0));
   }
 
   private void promptFor3DRServicesUpdate()
   {
-    this.context.startActivity(new Intent(this.context, UpdateServiceDialog.class).addFlags(268435456));
+    this.context.startActivity(new Intent(this.context, InstallServiceDialog.class).addFlags(268435456).putExtra("extra_requirement", 1));
   }
 
   public void connect(TowerListener paramTowerListener)

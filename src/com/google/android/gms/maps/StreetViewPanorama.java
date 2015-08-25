@@ -6,6 +6,10 @@ import com.google.android.gms.common.internal.zzv;
 import com.google.android.gms.dynamic.zzd;
 import com.google.android.gms.dynamic.zze;
 import com.google.android.gms.maps.internal.IStreetViewPanoramaDelegate;
+import com.google.android.gms.maps.internal.zzr.zza;
+import com.google.android.gms.maps.internal.zzs.zza;
+import com.google.android.gms.maps.internal.zzt.zza;
+import com.google.android.gms.maps.internal.zzu.zza;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.RuntimeRemoteException;
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
@@ -141,14 +145,20 @@ public class StreetViewPanorama
     }
   }
 
-  public final void setOnStreetViewPanoramaCameraChangeListener(OnStreetViewPanoramaCameraChangeListener paramOnStreetViewPanoramaCameraChangeListener)
+  public final void setOnStreetViewPanoramaCameraChangeListener(final OnStreetViewPanoramaCameraChangeListener paramOnStreetViewPanoramaCameraChangeListener)
   {
     if (paramOnStreetViewPanoramaCameraChangeListener == null);
     try
     {
       this.zzaum.setOnStreetViewPanoramaCameraChangeListener(null);
       return;
-      this.zzaum.setOnStreetViewPanoramaCameraChangeListener(new StreetViewPanorama.2(this, paramOnStreetViewPanoramaCameraChangeListener));
+      this.zzaum.setOnStreetViewPanoramaCameraChangeListener(new zzr.zza()
+      {
+        public void onStreetViewPanoramaCameraChange(StreetViewPanoramaCamera paramAnonymousStreetViewPanoramaCamera)
+        {
+          paramOnStreetViewPanoramaCameraChangeListener.onStreetViewPanoramaCameraChange(paramAnonymousStreetViewPanoramaCamera);
+        }
+      });
       return;
     }
     catch (RemoteException localRemoteException)
@@ -157,14 +167,20 @@ public class StreetViewPanorama
     }
   }
 
-  public final void setOnStreetViewPanoramaChangeListener(OnStreetViewPanoramaChangeListener paramOnStreetViewPanoramaChangeListener)
+  public final void setOnStreetViewPanoramaChangeListener(final OnStreetViewPanoramaChangeListener paramOnStreetViewPanoramaChangeListener)
   {
     if (paramOnStreetViewPanoramaChangeListener == null);
     try
     {
       this.zzaum.setOnStreetViewPanoramaChangeListener(null);
       return;
-      this.zzaum.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama.1(this, paramOnStreetViewPanoramaChangeListener));
+      this.zzaum.setOnStreetViewPanoramaChangeListener(new zzs.zza()
+      {
+        public void onStreetViewPanoramaChange(StreetViewPanoramaLocation paramAnonymousStreetViewPanoramaLocation)
+        {
+          paramOnStreetViewPanoramaChangeListener.onStreetViewPanoramaChange(paramAnonymousStreetViewPanoramaLocation);
+        }
+      });
       return;
     }
     catch (RemoteException localRemoteException)
@@ -173,14 +189,20 @@ public class StreetViewPanorama
     }
   }
 
-  public final void setOnStreetViewPanoramaClickListener(OnStreetViewPanoramaClickListener paramOnStreetViewPanoramaClickListener)
+  public final void setOnStreetViewPanoramaClickListener(final OnStreetViewPanoramaClickListener paramOnStreetViewPanoramaClickListener)
   {
     if (paramOnStreetViewPanoramaClickListener == null);
     try
     {
       this.zzaum.setOnStreetViewPanoramaClickListener(null);
       return;
-      this.zzaum.setOnStreetViewPanoramaClickListener(new StreetViewPanorama.3(this, paramOnStreetViewPanoramaClickListener));
+      this.zzaum.setOnStreetViewPanoramaClickListener(new zzt.zza()
+      {
+        public void onStreetViewPanoramaClick(StreetViewPanoramaOrientation paramAnonymousStreetViewPanoramaOrientation)
+        {
+          paramOnStreetViewPanoramaClickListener.onStreetViewPanoramaClick(paramAnonymousStreetViewPanoramaOrientation);
+        }
+      });
       return;
     }
     catch (RemoteException localRemoteException)
@@ -189,14 +211,20 @@ public class StreetViewPanorama
     }
   }
 
-  public final void setOnStreetViewPanoramaLongClickListener(OnStreetViewPanoramaLongClickListener paramOnStreetViewPanoramaLongClickListener)
+  public final void setOnStreetViewPanoramaLongClickListener(final OnStreetViewPanoramaLongClickListener paramOnStreetViewPanoramaLongClickListener)
   {
     if (paramOnStreetViewPanoramaLongClickListener == null);
     try
     {
       this.zzaum.setOnStreetViewPanoramaLongClickListener(null);
       return;
-      this.zzaum.setOnStreetViewPanoramaLongClickListener(new StreetViewPanorama.4(this, paramOnStreetViewPanoramaLongClickListener));
+      this.zzaum.setOnStreetViewPanoramaLongClickListener(new zzu.zza()
+      {
+        public void onStreetViewPanoramaLongClick(StreetViewPanoramaOrientation paramAnonymousStreetViewPanoramaOrientation)
+        {
+          paramOnStreetViewPanoramaLongClickListener.onStreetViewPanoramaLongClick(paramAnonymousStreetViewPanoramaOrientation);
+        }
+      });
       return;
     }
     catch (RemoteException localRemoteException)

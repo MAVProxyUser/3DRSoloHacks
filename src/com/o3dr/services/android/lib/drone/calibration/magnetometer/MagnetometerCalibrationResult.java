@@ -21,7 +21,7 @@ public class MagnetometerCalibrationResult
   };
   private boolean autoSaved;
   private boolean calibrationSuccessful;
-  private byte compassId;
+  private int compassId;
   private float fitness;
   private float xDiag;
   private float xOffDiag;
@@ -37,9 +37,9 @@ public class MagnetometerCalibrationResult
   {
   }
 
-  public MagnetometerCalibrationResult(byte paramByte, boolean paramBoolean1, boolean paramBoolean2, float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5, float paramFloat6, float paramFloat7, float paramFloat8, float paramFloat9, float paramFloat10)
+  public MagnetometerCalibrationResult(int paramInt, boolean paramBoolean1, boolean paramBoolean2, float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5, float paramFloat6, float paramFloat7, float paramFloat8, float paramFloat9, float paramFloat10)
   {
-    this.compassId = paramByte;
+    this.compassId = paramInt;
     this.calibrationSuccessful = paramBoolean1;
     this.autoSaved = paramBoolean2;
     this.fitness = paramFloat1;
@@ -56,7 +56,7 @@ public class MagnetometerCalibrationResult
 
   private MagnetometerCalibrationResult(Parcel paramParcel)
   {
-    this.compassId = paramParcel.readByte();
+    this.compassId = paramParcel.readInt();
     this.fitness = paramParcel.readFloat();
     this.xOffset = paramParcel.readFloat();
     this.yOffset = paramParcel.readFloat();
@@ -90,7 +90,7 @@ public class MagnetometerCalibrationResult
     return 0;
   }
 
-  public byte getCompassId()
+  public int getCompassId()
   {
     return this.compassId;
   }
@@ -223,7 +223,7 @@ public class MagnetometerCalibrationResult
   public void writeToParcel(Parcel paramParcel, int paramInt)
   {
     byte b1 = 1;
-    paramParcel.writeByte(this.compassId);
+    paramParcel.writeInt(this.compassId);
     paramParcel.writeFloat(this.fitness);
     paramParcel.writeFloat(this.xOffset);
     paramParcel.writeFloat(this.yOffset);

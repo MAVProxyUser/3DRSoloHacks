@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.memory.MemoryCache;
@@ -331,7 +332,7 @@ public class ImageLoader
     if (paramDisplayImageOptions == null)
       paramDisplayImageOptions = this.configuration.defaultDisplayImageOptions;
     DisplayImageOptions localDisplayImageOptions = new DisplayImageOptions.Builder().cloneFrom(paramDisplayImageOptions).syncLoading(true).build();
-    ImageLoader.SyncImageLoadingListener localSyncImageLoadingListener = new ImageLoader.SyncImageLoadingListener(null);
+    SyncImageLoadingListener localSyncImageLoadingListener = new SyncImageLoadingListener(null);
     loadImage(paramString, paramImageSize, localDisplayImageOptions, localSyncImageLoadingListener);
     return localSyncImageLoadingListener.getLoadedBitmap();
   }
@@ -349,6 +350,21 @@ public class ImageLoader
   public void stop()
   {
     this.engine.stop();
+  }
+
+  private static class SyncImageLoadingListener extends SimpleImageLoadingListener
+  {
+    private Bitmap loadedImage;
+
+    public Bitmap getLoadedBitmap()
+    {
+      return this.loadedImage;
+    }
+
+    public void onLoadingComplete(String paramString, View paramView, Bitmap paramBitmap)
+    {
+      this.loadedImage = paramBitmap;
+    }
   }
 }
 

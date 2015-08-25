@@ -2,8 +2,40 @@ package com.jcraft.jsch;
 
 public abstract interface ConfigRepository
 {
-  public static final Config defaultConfig = new ConfigRepository.1();
-  public static final ConfigRepository nullConfig = new ConfigRepository.2();
+  public static final Config defaultConfig = new Config()
+  {
+    public String getHostname()
+    {
+      return null;
+    }
+
+    public int getPort()
+    {
+      return -1;
+    }
+
+    public String getUser()
+    {
+      return null;
+    }
+
+    public String getValue(String paramAnonymousString)
+    {
+      return null;
+    }
+
+    public String[] getValues(String paramAnonymousString)
+    {
+      return null;
+    }
+  };
+  public static final ConfigRepository nullConfig = new ConfigRepository()
+  {
+    public ConfigRepository.Config getConfig(String paramAnonymousString)
+    {
+      return defaultConfig;
+    }
+  };
 
   public abstract Config getConfig(String paramString);
 

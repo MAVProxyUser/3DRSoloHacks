@@ -38,8 +38,8 @@ public final class R
 
   public static final class drawable
   {
-    public static final int fab_bg_mini = 2130837703;
-    public static final int fab_bg_normal = 2130837704;
+    public static final int fab_bg_mini = 2130837744;
+    public static final int fab_bg_normal = 2130837745;
   }
 
   public static final class id

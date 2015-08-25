@@ -5,24 +5,24 @@ import android.os.Build.VERSION;
 
 public class BitmapCompat
 {
-  static final BitmapImpl IMPL = new BitmapCompat.BaseBitmapImpl();
+  static final BitmapImpl IMPL = new BaseBitmapImpl();
 
   static
   {
     int i = Build.VERSION.SDK_INT;
     if (i >= 19)
     {
-      IMPL = new BitmapCompat.KitKatBitmapCompatImpl();
+      IMPL = new KitKatBitmapCompatImpl();
       return;
     }
     if (i >= 18)
     {
-      IMPL = new BitmapCompat.JbMr2BitmapCompatImpl();
+      IMPL = new JbMr2BitmapCompatImpl();
       return;
     }
     if (i >= 12)
     {
-      IMPL = new BitmapCompat.HcMr1BitmapCompatImpl();
+      IMPL = new HcMr1BitmapCompatImpl();
       return;
     }
   }
@@ -42,6 +42,24 @@ public class BitmapCompat
     IMPL.setHasMipMap(paramBitmap, paramBoolean);
   }
 
+  static class BaseBitmapImpl
+    implements BitmapCompat.BitmapImpl
+  {
+    public int getAllocationByteCount(Bitmap paramBitmap)
+    {
+      return paramBitmap.getRowBytes() * paramBitmap.getHeight();
+    }
+
+    public boolean hasMipMap(Bitmap paramBitmap)
+    {
+      return false;
+    }
+
+    public void setHasMipMap(Bitmap paramBitmap, boolean paramBoolean)
+    {
+    }
+  }
+
   static abstract interface BitmapImpl
   {
     public abstract int getAllocationByteCount(Bitmap paramBitmap);
@@ -49,6 +67,35 @@ public class BitmapCompat
     public abstract boolean hasMipMap(Bitmap paramBitmap);
 
     public abstract void setHasMipMap(Bitmap paramBitmap, boolean paramBoolean);
+  }
+
+  static class HcMr1BitmapCompatImpl extends BitmapCompat.BaseBitmapImpl
+  {
+    public int getAllocationByteCount(Bitmap paramBitmap)
+    {
+      return BitmapCompatHoneycombMr1.getAllocationByteCount(paramBitmap);
+    }
+  }
+
+  static class JbMr2BitmapCompatImpl extends BitmapCompat.HcMr1BitmapCompatImpl
+  {
+    public boolean hasMipMap(Bitmap paramBitmap)
+    {
+      return BitmapCompatJellybeanMR2.hasMipMap(paramBitmap);
+    }
+
+    public void setHasMipMap(Bitmap paramBitmap, boolean paramBoolean)
+    {
+      BitmapCompatJellybeanMR2.setHasMipMap(paramBitmap, paramBoolean);
+    }
+  }
+
+  static class KitKatBitmapCompatImpl extends BitmapCompat.JbMr2BitmapCompatImpl
+  {
+    public int getAllocationByteCount(Bitmap paramBitmap)
+    {
+      return BitmapCompatKitKat.getAllocationByteCount(paramBitmap);
+    }
   }
 }
 

@@ -19,7 +19,7 @@ public final class PendingResults
     for (boolean bool = true; ; bool = false)
     {
       zzv.zzb(bool, "Status code must be CommonStatusCodes.CANCELED");
-      PendingResults.zza localzza = new PendingResults.zza(paramR);
+      zza localzza = new zza(paramR);
       localzza.cancel();
       return localzza;
     }
@@ -28,7 +28,7 @@ public final class PendingResults
   public static <R extends Result> PendingResult<R> immediatePendingResult(R paramR)
   {
     zzv.zzb(paramR, "Result must not be null");
-    PendingResults.zzb localzzb = new PendingResults.zzb();
+    zzb localzzb = new zzb();
     localzzb.setResult(paramR);
     return localzzb;
   }
@@ -39,6 +39,37 @@ public final class PendingResults
     zzk localzzk = new zzk(Looper.getMainLooper());
     localzzk.setResult(paramStatus);
     return localzzk;
+  }
+
+  private static final class zza<R extends Result> extends AbstractPendingResult<R>
+  {
+    private final R zzQS;
+
+    public zza(R paramR)
+    {
+      super();
+      this.zzQS = paramR;
+    }
+
+    protected R createFailedResult(Status paramStatus)
+    {
+      if (paramStatus.getStatusCode() != this.zzQS.getStatus().getStatusCode())
+        throw new UnsupportedOperationException("Creating failed results is not supported");
+      return this.zzQS;
+    }
+  }
+
+  private static final class zzb<R extends Result> extends AbstractPendingResult<R>
+  {
+    public zzb()
+    {
+      super();
+    }
+
+    protected R createFailedResult(Status paramStatus)
+    {
+      throw new UnsupportedOperationException("Creating failed results is not supported");
+    }
   }
 }
 

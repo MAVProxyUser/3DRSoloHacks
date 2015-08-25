@@ -7,7 +7,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 public class VersionUtils
 {
-  public static final int LIB_VERSION = 20214;
+  public static final int LIB_VERSION = 20216;
 
   public static int getVersion(Context paramContext)
   {

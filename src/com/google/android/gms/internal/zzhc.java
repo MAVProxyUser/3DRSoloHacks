@@ -24,22 +24,46 @@ public abstract class zzhc<T>
 
   public static zzhc<Float> zza(String paramString, Float paramFloat)
   {
-    return new zzhc.4(paramString, paramFloat);
+    return new zzhc(paramString, paramFloat)
+    {
+      protected Float zzbD(String paramAnonymousString)
+      {
+        return zzhc.zzll().zzb(this.zzra, (Float)this.zzrb);
+      }
+    };
   }
 
   public static zzhc<Integer> zza(String paramString, Integer paramInteger)
   {
-    return new zzhc.3(paramString, paramInteger);
+    return new zzhc(paramString, paramInteger)
+    {
+      protected Integer zzbC(String paramAnonymousString)
+      {
+        return zzhc.zzll().zzb(this.zzra, (Integer)this.zzrb);
+      }
+    };
   }
 
   public static zzhc<Long> zza(String paramString, Long paramLong)
   {
-    return new zzhc.2(paramString, paramLong);
+    return new zzhc(paramString, paramLong)
+    {
+      protected Long zzbB(String paramAnonymousString)
+      {
+        return zzhc.zzll().getLong(this.zzra, (Long)this.zzrb);
+      }
+    };
   }
 
   public static zzhc<Boolean> zzg(String paramString, boolean paramBoolean)
   {
-    return new zzhc.1(paramString, Boolean.valueOf(paramBoolean));
+    return new zzhc(paramString, Boolean.valueOf(paramBoolean))
+    {
+      protected Boolean zzbA(String paramAnonymousString)
+      {
+        return zzhc.zzll().zzb(this.zzra, (Boolean)this.zzrb);
+      }
+    };
   }
 
   public static int zzlj()
@@ -49,7 +73,13 @@ public abstract class zzhc<T>
 
   public static zzhc<String> zzr(String paramString1, String paramString2)
   {
-    return new zzhc.5(paramString1, paramString2);
+    return new zzhc(paramString1, paramString2)
+    {
+      protected String zzbE(String paramAnonymousString)
+      {
+        return zzhc.zzll().getString(this.zzra, (String)this.zzrb);
+      }
+    };
   }
 
   public final T get()

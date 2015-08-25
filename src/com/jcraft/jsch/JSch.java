@@ -7,7 +7,17 @@ import java.util.Vector;
 
 public class JSch
 {
-  private static final Logger DEVNULL = new JSch.1();
+  private static final Logger DEVNULL = new Logger()
+  {
+    public boolean isEnabled(int paramAnonymousInt)
+    {
+      return false;
+    }
+
+    public void log(int paramAnonymousInt, String paramAnonymousString)
+    {
+    }
+  };
   public static final String VERSION = "0.1.51";
   static Hashtable config = new Hashtable();
   static Logger logger = DEVNULL;

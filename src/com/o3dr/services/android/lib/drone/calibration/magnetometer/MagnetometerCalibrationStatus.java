@@ -25,9 +25,9 @@ public class MagnetometerCalibrationStatus
     }
   };
   private boolean calibrationCancelled;
-  private final Map<Byte, MagnetometerCalibrationProgress> calibrationProgressTracker = new HashMap();
-  private final Map<Byte, MagnetometerCalibrationResult> calibrationResultTracker = new HashMap();
-  private final List<Byte> compassList = new ArrayList();
+  private final Map<Integer, MagnetometerCalibrationProgress> calibrationProgressTracker = new HashMap();
+  private final Map<Integer, MagnetometerCalibrationResult> calibrationResultTracker = new HashMap();
+  private final List<Integer> compassList = new ArrayList();
 
   public MagnetometerCalibrationStatus()
   {
@@ -57,9 +57,9 @@ public class MagnetometerCalibrationStatus
   {
     if (paramMagnetometerCalibrationProgress != null)
     {
-      byte b = paramMagnetometerCalibrationProgress.getCompassId();
-      this.calibrationProgressTracker.put(Byte.valueOf(b), paramMagnetometerCalibrationProgress);
-      this.compassList.add(Byte.valueOf(b));
+      int i = paramMagnetometerCalibrationProgress.getCompassId();
+      this.calibrationProgressTracker.put(Integer.valueOf(i), paramMagnetometerCalibrationProgress);
+      this.compassList.add(Integer.valueOf(i));
     }
   }
 
@@ -67,9 +67,9 @@ public class MagnetometerCalibrationStatus
   {
     if (paramMagnetometerCalibrationResult != null)
     {
-      byte b = paramMagnetometerCalibrationResult.getCompassId();
-      this.calibrationResultTracker.put(Byte.valueOf(paramMagnetometerCalibrationResult.getCompassId()), paramMagnetometerCalibrationResult);
-      this.compassList.add(Byte.valueOf(b));
+      int i = paramMagnetometerCalibrationResult.getCompassId();
+      this.calibrationResultTracker.put(Integer.valueOf(paramMagnetometerCalibrationResult.getCompassId()), paramMagnetometerCalibrationResult);
+      this.compassList.add(Integer.valueOf(i));
     }
   }
 
@@ -78,17 +78,17 @@ public class MagnetometerCalibrationStatus
     return 0;
   }
 
-  public MagnetometerCalibrationProgress getCalibrationProgress(byte paramByte)
+  public MagnetometerCalibrationProgress getCalibrationProgress(int paramInt)
   {
-    return (MagnetometerCalibrationProgress)this.calibrationProgressTracker.get(Byte.valueOf(paramByte));
+    return (MagnetometerCalibrationProgress)this.calibrationProgressTracker.get(Integer.valueOf(paramInt));
   }
 
-  public MagnetometerCalibrationResult getCalibrationResult(byte paramByte)
+  public MagnetometerCalibrationResult getCalibrationResult(int paramInt)
   {
-    return (MagnetometerCalibrationResult)this.calibrationResultTracker.get(Byte.valueOf(paramByte));
+    return (MagnetometerCalibrationResult)this.calibrationResultTracker.get(Integer.valueOf(paramInt));
   }
 
-  public List<Byte> getCompassIds()
+  public List<Integer> getCompassIds()
   {
     return this.compassList;
   }
@@ -103,8 +103,8 @@ public class MagnetometerCalibrationStatus
     Iterator localIterator = this.compassList.iterator();
     while (localIterator.hasNext())
     {
-      Byte localByte = (Byte)localIterator.next();
-      if (!this.calibrationResultTracker.containsKey(localByte))
+      Integer localInteger = (Integer)localIterator.next();
+      if (!this.calibrationResultTracker.containsKey(localInteger))
         return false;
     }
     return true;

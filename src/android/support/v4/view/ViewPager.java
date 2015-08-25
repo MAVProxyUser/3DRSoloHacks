@@ -9,12 +9,16 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import android.os.SystemClock;
 import android.support.annotation.DrawableRes;
 import android.support.v4.os.ParcelableCompat;
+import android.support.v4.os.ParcelableCompatCreatorCallbacks;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v4.widget.EdgeEffectCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -1311,7 +1315,7 @@ public class ViewPager extends ViewGroup
     this.mFlingDistance = ((int)(25.0F * f));
     this.mCloseEnough = ((int)(2.0F * f));
     this.mDefaultGutterSize = ((int)(16.0F * f));
-    ViewCompat.setAccessibilityDelegate(this, new ViewPager.MyAccessibilityDelegate(this));
+    ViewCompat.setAccessibilityDelegate(this, new MyAccessibilityDelegate());
     if (ViewCompat.getImportantForAccessibility(this) == 0)
       ViewCompat.setImportantForAccessibility(this, 1);
   }
@@ -2551,6 +2555,68 @@ public class ViewPager extends ViewGroup
     }
   }
 
+  class MyAccessibilityDelegate extends AccessibilityDelegateCompat
+  {
+    MyAccessibilityDelegate()
+    {
+    }
+
+    private boolean canScroll()
+    {
+      return (ViewPager.this.mAdapter != null) && (ViewPager.this.mAdapter.getCount() > 1);
+    }
+
+    public void onInitializeAccessibilityEvent(View paramView, AccessibilityEvent paramAccessibilityEvent)
+    {
+      super.onInitializeAccessibilityEvent(paramView, paramAccessibilityEvent);
+      paramAccessibilityEvent.setClassName(ViewPager.class.getName());
+      AccessibilityRecordCompat localAccessibilityRecordCompat = AccessibilityRecordCompat.obtain();
+      localAccessibilityRecordCompat.setScrollable(canScroll());
+      if ((paramAccessibilityEvent.getEventType() == 4096) && (ViewPager.this.mAdapter != null))
+      {
+        localAccessibilityRecordCompat.setItemCount(ViewPager.this.mAdapter.getCount());
+        localAccessibilityRecordCompat.setFromIndex(ViewPager.this.mCurItem);
+        localAccessibilityRecordCompat.setToIndex(ViewPager.this.mCurItem);
+      }
+    }
+
+    public void onInitializeAccessibilityNodeInfo(View paramView, AccessibilityNodeInfoCompat paramAccessibilityNodeInfoCompat)
+    {
+      super.onInitializeAccessibilityNodeInfo(paramView, paramAccessibilityNodeInfoCompat);
+      paramAccessibilityNodeInfoCompat.setClassName(ViewPager.class.getName());
+      paramAccessibilityNodeInfoCompat.setScrollable(canScroll());
+      if (ViewPager.this.canScrollHorizontally(1))
+        paramAccessibilityNodeInfoCompat.addAction(4096);
+      if (ViewPager.this.canScrollHorizontally(-1))
+        paramAccessibilityNodeInfoCompat.addAction(8192);
+    }
+
+    public boolean performAccessibilityAction(View paramView, int paramInt, Bundle paramBundle)
+    {
+      if (super.performAccessibilityAction(paramView, paramInt, paramBundle))
+        return true;
+      switch (paramInt)
+      {
+      default:
+        return false;
+      case 4096:
+        if (ViewPager.this.canScrollHorizontally(1))
+        {
+          ViewPager.this.setCurrentItem(1 + ViewPager.this.mCurItem);
+          return true;
+        }
+        return false;
+      case 8192:
+      }
+      if (ViewPager.this.canScrollHorizontally(-1))
+      {
+        ViewPager.this.setCurrentItem(-1 + ViewPager.this.mCurItem);
+        return true;
+      }
+      return false;
+    }
+  }
+
   static abstract interface OnAdapterChangeListener
   {
     public abstract void onAdapterChanged(PagerAdapter paramPagerAdapter1, PagerAdapter paramPagerAdapter2);
@@ -2589,7 +2655,18 @@ public class ViewPager extends ViewGroup
 
   public static class SavedState extends View.BaseSavedState
   {
-    public static final Parcelable.Creator<SavedState> CREATOR = ParcelableCompat.newCreator(new ViewPager.SavedState.1());
+    public static final Parcelable.Creator<SavedState> CREATOR = ParcelableCompat.newCreator(new ParcelableCompatCreatorCallbacks()
+    {
+      public ViewPager.SavedState createFromParcel(Parcel paramAnonymousParcel, ClassLoader paramAnonymousClassLoader)
+      {
+        return new ViewPager.SavedState(paramAnonymousParcel, paramAnonymousClassLoader);
+      }
+
+      public ViewPager.SavedState[] newArray(int paramAnonymousInt)
+      {
+        return new ViewPager.SavedState[paramAnonymousInt];
+      }
+    });
     Parcelable adapterState;
     ClassLoader loader;
     int position;
@@ -2619,6 +2696,22 @@ public class ViewPager extends ViewGroup
       super.writeToParcel(paramParcel, paramInt);
       paramParcel.writeInt(this.position);
       paramParcel.writeParcelable(this.adapterState, paramInt);
+    }
+  }
+
+  public static class SimpleOnPageChangeListener
+    implements ViewPager.OnPageChangeListener
+  {
+    public void onPageScrollStateChanged(int paramInt)
+    {
+    }
+
+    public void onPageScrolled(int paramInt1, float paramFloat, int paramInt2)
+    {
+    }
+
+    public void onPageSelected(int paramInt)
+    {
     }
   }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build.VERSION;
 import android.os.IBinder;
+import android.os.RemoteException;
 
 public abstract class NotificationCompatSideChannelService extends Service
 {
@@ -29,7 +30,61 @@ public abstract class NotificationCompatSideChannelService extends Service
   {
     if ((!paramIntent.getAction().equals("android.support.BIND_NOTIFICATION_SIDE_CHANNEL")) || (Build.VERSION.SDK_INT > 19))
       return null;
-    return new NotificationCompatSideChannelService.NotificationSideChannelStub(this, null);
+    return new NotificationSideChannelStub(null);
+  }
+
+  private class NotificationSideChannelStub extends INotificationSideChannel.Stub
+  {
+    private NotificationSideChannelStub()
+    {
+    }
+
+    public void cancel(String paramString1, int paramInt, String paramString2)
+      throws RemoteException
+    {
+      NotificationCompatSideChannelService.this.checkPermission(getCallingUid(), paramString1);
+      long l = clearCallingIdentity();
+      try
+      {
+        NotificationCompatSideChannelService.this.cancel(paramString1, paramInt, paramString2);
+        return;
+      }
+      finally
+      {
+        restoreCallingIdentity(l);
+      }
+    }
+
+    public void cancelAll(String paramString)
+    {
+      NotificationCompatSideChannelService.this.checkPermission(getCallingUid(), paramString);
+      long l = clearCallingIdentity();
+      try
+      {
+        NotificationCompatSideChannelService.this.cancelAll(paramString);
+        return;
+      }
+      finally
+      {
+        restoreCallingIdentity(l);
+      }
+    }
+
+    public void notify(String paramString1, int paramInt, String paramString2, Notification paramNotification)
+      throws RemoteException
+    {
+      NotificationCompatSideChannelService.this.checkPermission(getCallingUid(), paramString1);
+      long l = clearCallingIdentity();
+      try
+      {
+        NotificationCompatSideChannelService.this.notify(paramString1, paramInt, paramString2, paramNotification);
+        return;
+      }
+      finally
+      {
+        restoreCallingIdentity(l);
+      }
+    }
   }
 }
 

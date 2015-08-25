@@ -47,6 +47,7 @@ import com.o3dr.services.android.lib.model.IDroneApi;
 import com.o3dr.services.android.lib.model.IObserver;
 import com.o3dr.services.android.lib.model.action.Action;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -300,7 +301,7 @@ public class Drone
     DroneStateApi.arm(this, paramBoolean);
   }
 
-  public <T extends MissionItem> void buildMissionItemsAsync(final OnMissionItemsBuiltCallback<T> paramOnMissionItemsBuiltCallback, final MissionItem.ComplexItem<T>[] paramArrayOfComplexItem)
+  public <T extends MissionItem> void buildMissionItemsAsync(final MissionItem.ComplexItem<T>[] paramArrayOfComplexItem, final OnMissionItemsBuiltCallback<T> paramOnMissionItemsBuiltCallback)
   {
     if (paramOnMissionItemsBuiltCallback == null)
       throw new IllegalArgumentException("Callback must be non-null.");
@@ -316,7 +317,7 @@ public class Drone
         {
           public void run()
           {
-            Drone.3.this.val$callback.onMissionItemsBuilt(Drone.3.this.val$missionItems);
+            Drone.4.this.val$callback.onMissionItemsBuilt(Drone.4.this.val$missionItems);
           }
         });
       }
@@ -349,7 +350,6 @@ public class Drone
         this.asyncScheduler.shutdownNow();
         this.asyncScheduler = null;
       }
-      this.droneApi = null;
       this.droneListeners.clear();
       return;
     }
@@ -357,6 +357,10 @@ public class Drone
     {
       while (true)
         Log.e(TAG, localRemoteException.getMessage(), localRemoteException);
+    }
+    catch (NoSuchElementException localNoSuchElementException)
+    {
+      label82: break label82;
     }
   }
 
@@ -435,7 +439,13 @@ public class Drone
       throw new IllegalArgumentException("Callback must be non-null.");
     if (!isStarted())
     {
-      paramOnAttributeRetrievedCallback.onRetrievalFailed();
+      this.handler.post(new Runnable()
+      {
+        public void run()
+        {
+          paramOnAttributeRetrievedCallback.onRetrievalFailed();
+        }
+      });
       return;
     }
     this.asyncScheduler.execute(new Runnable()
@@ -449,10 +459,10 @@ public class Drone
           {
             if (localParcelable == null)
             {
-              Drone.2.this.val$callback.onRetrievalFailed();
+              Drone.3.this.val$callback.onRetrievalFailed();
               return;
             }
-            Drone.2.this.val$callback.onRetrievalSucceed(localParcelable);
+            Drone.3.this.val$callback.onRetrievalSucceed(localParcelable);
           }
         });
       }
@@ -516,7 +526,23 @@ public class Drone
     if (paramBundle != null)
       paramBundle.setClassLoader(this.context.getClassLoader());
     if ("com.o3dr.services.android.lib.attribute.event.STATE_UPDATED".equals(paramString))
-      getAttributeAsync("com.o3dr.services.android.lib.attribute.STATE", new Drone.5(this));
+      getAttributeAsync("com.o3dr.services.android.lib.attribute.STATE", new OnAttributeRetrievedCallback()
+      {
+        public void onRetrievalFailed()
+        {
+          Drone.this.stopTimer();
+        }
+
+        public void onRetrievalSucceed(State paramAnonymousState)
+        {
+          if (paramAnonymousState.isFlying())
+          {
+            Drone.this.resetFlightTimer();
+            return;
+          }
+          Drone.this.stopTimer();
+        }
+      });
     while (this.droneListeners.isEmpty())
     {
       return;
@@ -705,6 +731,18 @@ public class Drone
   public void writeParameters(Parameters paramParameters)
   {
     ParameterApi.writeParameters(this, paramParameters);
+  }
+
+  public static class AttributeRetrievedListener<T extends Parcelable>
+    implements Drone.OnAttributeRetrievedCallback<T>
+  {
+    public void onRetrievalFailed()
+    {
+    }
+
+    public void onRetrievalSucceed(T paramT)
+    {
+    }
   }
 
   public static abstract interface OnAttributeRetrievedCallback<T extends Parcelable>

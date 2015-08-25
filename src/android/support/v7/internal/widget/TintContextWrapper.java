@@ -3,6 +3,8 @@ package android.support.v7.internal.widget;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
+import android.graphics.drawable.Drawable;
 
 public class TintContextWrapper extends ContextWrapper
 {
@@ -23,8 +25,28 @@ public class TintContextWrapper extends ContextWrapper
   public Resources getResources()
   {
     if (this.mResources == null)
-      this.mResources = new TintContextWrapper.TintResources(super.getResources(), TintManager.get(this));
+      this.mResources = new TintResources(super.getResources(), TintManager.get(this));
     return this.mResources;
+  }
+
+  static class TintResources extends ResourcesWrapper
+  {
+    private final TintManager mTintManager;
+
+    public TintResources(Resources paramResources, TintManager paramTintManager)
+    {
+      super();
+      this.mTintManager = paramTintManager;
+    }
+
+    public Drawable getDrawable(int paramInt)
+      throws Resources.NotFoundException
+    {
+      Drawable localDrawable = super.getDrawable(paramInt);
+      if (localDrawable != null)
+        this.mTintManager.tintDrawableUsingColorFilter(paramInt, localDrawable);
+      return localDrawable;
+    }
   }
 }
 

@@ -36,7 +36,20 @@ public class FragmentActivity extends Activity
   private static final String TAG = "FragmentActivity";
   SimpleArrayMap<String, LoaderManagerImpl> mAllLoaderManagers;
   boolean mCheckedForLoaderManager;
-  final FragmentContainer mContainer = new FragmentActivity.2(this);
+  final FragmentContainer mContainer = new FragmentContainer()
+  {
+    @Nullable
+    public View findViewById(int paramAnonymousInt)
+    {
+      return FragmentActivity.this.findViewById(paramAnonymousInt);
+    }
+
+    public boolean hasView()
+    {
+      Window localWindow = FragmentActivity.this.getWindow();
+      return (localWindow != null) && (localWindow.peekDecorView() != null);
+    }
+  };
   boolean mCreated;
   final FragmentManagerImpl mFragments = new FragmentManagerImpl();
   final Handler mHandler = new Handler()

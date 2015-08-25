@@ -9,8 +9,14 @@ public class DroneStateApi
 {
   public static void arm(Drone paramDrone, boolean paramBoolean)
   {
+    arm(paramDrone, paramBoolean, false);
+  }
+
+  public static void arm(Drone paramDrone, boolean paramBoolean1, boolean paramBoolean2)
+  {
     Bundle localBundle = new Bundle();
-    localBundle.putBoolean("extra_arm", paramBoolean);
+    localBundle.putBoolean("extra_arm", paramBoolean1);
+    localBundle.putBoolean("extra_emergency_disarm", paramBoolean2);
     paramDrone.performAsyncAction(new Action("com.o3dr.services.android.action.ARM", localBundle));
   }
 

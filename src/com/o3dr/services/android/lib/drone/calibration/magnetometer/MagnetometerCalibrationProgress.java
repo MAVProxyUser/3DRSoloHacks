@@ -19,8 +19,8 @@ public class MagnetometerCalibrationProgress
       return new MagnetometerCalibrationProgress[paramAnonymousInt];
     }
   };
-  private byte compassId;
-  private byte completionPercentage;
+  private int compassId;
+  private int completionPercentage;
   private float directionX;
   private float directionY;
   private float directionZ;
@@ -29,10 +29,10 @@ public class MagnetometerCalibrationProgress
   {
   }
 
-  public MagnetometerCalibrationProgress(byte paramByte1, byte paramByte2, float paramFloat1, float paramFloat2, float paramFloat3)
+  public MagnetometerCalibrationProgress(int paramInt1, int paramInt2, float paramFloat1, float paramFloat2, float paramFloat3)
   {
-    this.compassId = paramByte1;
-    this.completionPercentage = paramByte2;
+    this.compassId = paramInt1;
+    this.completionPercentage = paramInt2;
     this.directionX = paramFloat1;
     this.directionY = paramFloat2;
     this.directionZ = paramFloat3;
@@ -40,8 +40,8 @@ public class MagnetometerCalibrationProgress
 
   private MagnetometerCalibrationProgress(Parcel paramParcel)
   {
-    this.compassId = paramParcel.readByte();
-    this.completionPercentage = paramParcel.readByte();
+    this.compassId = paramParcel.readInt();
+    this.completionPercentage = paramParcel.readInt();
     this.directionX = paramParcel.readFloat();
     this.directionY = paramParcel.readFloat();
     this.directionZ = paramParcel.readFloat();
@@ -52,12 +52,12 @@ public class MagnetometerCalibrationProgress
     return 0;
   }
 
-  public byte getCompassId()
+  public int getCompassId()
   {
     return this.compassId;
   }
 
-  public byte getCompletionPercentage()
+  public int getCompletionPercentage()
   {
     return this.completionPercentage;
   }
@@ -104,8 +104,8 @@ public class MagnetometerCalibrationProgress
 
   public void writeToParcel(Parcel paramParcel, int paramInt)
   {
-    paramParcel.writeByte(this.compassId);
-    paramParcel.writeByte(this.completionPercentage);
+    paramParcel.writeInt(this.compassId);
+    paramParcel.writeInt(this.completionPercentage);
     paramParcel.writeFloat(this.directionX);
     paramParcel.writeFloat(this.directionY);
     paramParcel.writeFloat(this.directionZ);

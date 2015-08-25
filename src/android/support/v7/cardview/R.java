@@ -34,9 +34,9 @@ public final class R
 
   public static final class style
   {
-    public static final int CardView = 2131230891;
-    public static final int CardView_Dark = 2131230892;
-    public static final int CardView_Light = 2131230893;
+    public static final int CardView = 2131230892;
+    public static final int CardView_Dark = 2131230893;
+    public static final int CardView_Light = 2131230894;
   }
 
   public static final class styleable

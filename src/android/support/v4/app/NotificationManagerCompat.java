@@ -54,15 +54,15 @@ public class NotificationManagerCompat
     sEnabledNotificationListenerPackages = new HashSet();
     sLock = new Object();
     if (Build.VERSION.SDK_INT >= 14)
-      IMPL = new NotificationManagerCompat.ImplIceCreamSandwich();
+      IMPL = new ImplIceCreamSandwich();
     while (true)
     {
       SIDE_CHANNEL_BIND_FLAGS = IMPL.getSideChannelBindFlags();
       return;
       if (Build.VERSION.SDK_INT >= 5)
-        IMPL = new NotificationManagerCompat.ImplEclair();
+        IMPL = new ImplEclair();
       else
-        IMPL = new NotificationManagerCompat.ImplBase();
+        IMPL = new ImplBase();
     }
   }
 
@@ -127,14 +127,14 @@ public class NotificationManagerCompat
   {
     IMPL.cancelNotification(this.mNotificationManager, paramString, paramInt);
     if (Build.VERSION.SDK_INT <= 19)
-      pushSideChannelQueue(new NotificationManagerCompat.CancelTask(this.mContext.getPackageName(), paramInt, paramString));
+      pushSideChannelQueue(new CancelTask(this.mContext.getPackageName(), paramInt, paramString));
   }
 
   public void cancelAll()
   {
     this.mNotificationManager.cancelAll();
     if (Build.VERSION.SDK_INT <= 19)
-      pushSideChannelQueue(new NotificationManagerCompat.CancelTask(this.mContext.getPackageName()));
+      pushSideChannelQueue(new CancelTask(this.mContext.getPackageName()));
   }
 
   public void notify(int paramInt, Notification paramNotification)
@@ -146,11 +146,58 @@ public class NotificationManagerCompat
   {
     if (useSideChannelForNotification(paramNotification))
     {
-      pushSideChannelQueue(new NotificationManagerCompat.NotifyTask(this.mContext.getPackageName(), paramInt, paramString, paramNotification));
+      pushSideChannelQueue(new NotifyTask(this.mContext.getPackageName(), paramInt, paramString, paramNotification));
       IMPL.cancelNotification(this.mNotificationManager, paramString, paramInt);
       return;
     }
     IMPL.postNotification(this.mNotificationManager, paramString, paramInt, paramNotification);
+  }
+
+  private static class CancelTask
+    implements NotificationManagerCompat.Task
+  {
+    final boolean all;
+    final int id;
+    final String packageName;
+    final String tag;
+
+    public CancelTask(String paramString)
+    {
+      this.packageName = paramString;
+      this.id = 0;
+      this.tag = null;
+      this.all = true;
+    }
+
+    public CancelTask(String paramString1, int paramInt, String paramString2)
+    {
+      this.packageName = paramString1;
+      this.id = paramInt;
+      this.tag = paramString2;
+      this.all = false;
+    }
+
+    public void send(INotificationSideChannel paramINotificationSideChannel)
+      throws RemoteException
+    {
+      if (this.all)
+      {
+        paramINotificationSideChannel.cancelAll(this.packageName);
+        return;
+      }
+      paramINotificationSideChannel.cancel(this.packageName, this.id, this.tag);
+    }
+
+    public String toString()
+    {
+      StringBuilder localStringBuilder = new StringBuilder("CancelTask[");
+      localStringBuilder.append("packageName:").append(this.packageName);
+      localStringBuilder.append(", id:").append(this.id);
+      localStringBuilder.append(", tag:").append(this.tag);
+      localStringBuilder.append(", all:").append(this.all);
+      localStringBuilder.append("]");
+      return localStringBuilder.toString();
+    }
   }
 
   static abstract interface Impl
@@ -160,6 +207,79 @@ public class NotificationManagerCompat
     public abstract int getSideChannelBindFlags();
 
     public abstract void postNotification(NotificationManager paramNotificationManager, String paramString, int paramInt, Notification paramNotification);
+  }
+
+  static class ImplBase
+    implements NotificationManagerCompat.Impl
+  {
+    public void cancelNotification(NotificationManager paramNotificationManager, String paramString, int paramInt)
+    {
+      paramNotificationManager.cancel(paramInt);
+    }
+
+    public int getSideChannelBindFlags()
+    {
+      return 1;
+    }
+
+    public void postNotification(NotificationManager paramNotificationManager, String paramString, int paramInt, Notification paramNotification)
+    {
+      paramNotificationManager.notify(paramInt, paramNotification);
+    }
+  }
+
+  static class ImplEclair extends NotificationManagerCompat.ImplBase
+  {
+    public void cancelNotification(NotificationManager paramNotificationManager, String paramString, int paramInt)
+    {
+      NotificationManagerCompatEclair.cancelNotification(paramNotificationManager, paramString, paramInt);
+    }
+
+    public void postNotification(NotificationManager paramNotificationManager, String paramString, int paramInt, Notification paramNotification)
+    {
+      NotificationManagerCompatEclair.postNotification(paramNotificationManager, paramString, paramInt, paramNotification);
+    }
+  }
+
+  static class ImplIceCreamSandwich extends NotificationManagerCompat.ImplEclair
+  {
+    public int getSideChannelBindFlags()
+    {
+      return 33;
+    }
+  }
+
+  private static class NotifyTask
+    implements NotificationManagerCompat.Task
+  {
+    final int id;
+    final Notification notif;
+    final String packageName;
+    final String tag;
+
+    public NotifyTask(String paramString1, int paramInt, String paramString2, Notification paramNotification)
+    {
+      this.packageName = paramString1;
+      this.id = paramInt;
+      this.tag = paramString2;
+      this.notif = paramNotification;
+    }
+
+    public void send(INotificationSideChannel paramINotificationSideChannel)
+      throws RemoteException
+    {
+      paramINotificationSideChannel.notify(this.packageName, this.id, this.tag, this.notif);
+    }
+
+    public String toString()
+    {
+      StringBuilder localStringBuilder = new StringBuilder("NotifyTask[");
+      localStringBuilder.append("packageName:").append(this.packageName);
+      localStringBuilder.append(", id:").append(this.id);
+      localStringBuilder.append(", tag:").append(this.tag);
+      localStringBuilder.append("]");
+      return localStringBuilder.toString();
+    }
   }
 
   private static class ServiceConnectedEvent

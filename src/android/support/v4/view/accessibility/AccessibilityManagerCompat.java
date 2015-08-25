@@ -3,17 +3,18 @@ package android.support.v4.view.accessibility;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.os.Build.VERSION;
 import android.view.accessibility.AccessibilityManager;
+import java.util.Collections;
 import java.util.List;
 
 public class AccessibilityManagerCompat
 {
-  private static final AccessibilityManagerVersionImpl IMPL = new AccessibilityManagerCompat.AccessibilityManagerStubImpl();
+  private static final AccessibilityManagerVersionImpl IMPL = new AccessibilityManagerStubImpl();
 
   static
   {
     if (Build.VERSION.SDK_INT >= 14)
     {
-      IMPL = new AccessibilityManagerCompat.AccessibilityManagerIcsImpl();
+      IMPL = new AccessibilityManagerIcsImpl();
       return;
     }
   }
@@ -41,6 +42,79 @@ public class AccessibilityManagerCompat
   public static boolean removeAccessibilityStateChangeListener(AccessibilityManager paramAccessibilityManager, AccessibilityStateChangeListenerCompat paramAccessibilityStateChangeListenerCompat)
   {
     return IMPL.removeAccessibilityStateChangeListener(paramAccessibilityManager, paramAccessibilityStateChangeListenerCompat);
+  }
+
+  static class AccessibilityManagerIcsImpl extends AccessibilityManagerCompat.AccessibilityManagerStubImpl
+  {
+    public boolean addAccessibilityStateChangeListener(AccessibilityManager paramAccessibilityManager, AccessibilityManagerCompat.AccessibilityStateChangeListenerCompat paramAccessibilityStateChangeListenerCompat)
+    {
+      return AccessibilityManagerCompatIcs.addAccessibilityStateChangeListener(paramAccessibilityManager, paramAccessibilityStateChangeListenerCompat.mListener);
+    }
+
+    public List<AccessibilityServiceInfo> getEnabledAccessibilityServiceList(AccessibilityManager paramAccessibilityManager, int paramInt)
+    {
+      return AccessibilityManagerCompatIcs.getEnabledAccessibilityServiceList(paramAccessibilityManager, paramInt);
+    }
+
+    public List<AccessibilityServiceInfo> getInstalledAccessibilityServiceList(AccessibilityManager paramAccessibilityManager)
+    {
+      return AccessibilityManagerCompatIcs.getInstalledAccessibilityServiceList(paramAccessibilityManager);
+    }
+
+    public boolean isTouchExplorationEnabled(AccessibilityManager paramAccessibilityManager)
+    {
+      return AccessibilityManagerCompatIcs.isTouchExplorationEnabled(paramAccessibilityManager);
+    }
+
+    public Object newAccessiblityStateChangeListener(final AccessibilityManagerCompat.AccessibilityStateChangeListenerCompat paramAccessibilityStateChangeListenerCompat)
+    {
+      return AccessibilityManagerCompatIcs.newAccessibilityStateChangeListener(new AccessibilityManagerCompatIcs.AccessibilityStateChangeListenerBridge()
+      {
+        public void onAccessibilityStateChanged(boolean paramAnonymousBoolean)
+        {
+          paramAccessibilityStateChangeListenerCompat.onAccessibilityStateChanged(paramAnonymousBoolean);
+        }
+      });
+    }
+
+    public boolean removeAccessibilityStateChangeListener(AccessibilityManager paramAccessibilityManager, AccessibilityManagerCompat.AccessibilityStateChangeListenerCompat paramAccessibilityStateChangeListenerCompat)
+    {
+      return AccessibilityManagerCompatIcs.removeAccessibilityStateChangeListener(paramAccessibilityManager, paramAccessibilityStateChangeListenerCompat.mListener);
+    }
+  }
+
+  static class AccessibilityManagerStubImpl
+    implements AccessibilityManagerCompat.AccessibilityManagerVersionImpl
+  {
+    public boolean addAccessibilityStateChangeListener(AccessibilityManager paramAccessibilityManager, AccessibilityManagerCompat.AccessibilityStateChangeListenerCompat paramAccessibilityStateChangeListenerCompat)
+    {
+      return false;
+    }
+
+    public List<AccessibilityServiceInfo> getEnabledAccessibilityServiceList(AccessibilityManager paramAccessibilityManager, int paramInt)
+    {
+      return Collections.emptyList();
+    }
+
+    public List<AccessibilityServiceInfo> getInstalledAccessibilityServiceList(AccessibilityManager paramAccessibilityManager)
+    {
+      return Collections.emptyList();
+    }
+
+    public boolean isTouchExplorationEnabled(AccessibilityManager paramAccessibilityManager)
+    {
+      return false;
+    }
+
+    public Object newAccessiblityStateChangeListener(AccessibilityManagerCompat.AccessibilityStateChangeListenerCompat paramAccessibilityStateChangeListenerCompat)
+    {
+      return null;
+    }
+
+    public boolean removeAccessibilityStateChangeListener(AccessibilityManager paramAccessibilityManager, AccessibilityManagerCompat.AccessibilityStateChangeListenerCompat paramAccessibilityStateChangeListenerCompat)
+    {
+      return false;
+    }
   }
 
   static abstract interface AccessibilityManagerVersionImpl

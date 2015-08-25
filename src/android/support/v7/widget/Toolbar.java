@@ -19,13 +19,17 @@ import android.support.v7.internal.view.SupportMenuInflater;
 import android.support.v7.internal.view.menu.MenuBuilder;
 import android.support.v7.internal.view.menu.MenuBuilder.Callback;
 import android.support.v7.internal.view.menu.MenuItemImpl;
+import android.support.v7.internal.view.menu.MenuPresenter;
 import android.support.v7.internal.view.menu.MenuPresenter.Callback;
+import android.support.v7.internal.view.menu.MenuView;
+import android.support.v7.internal.view.menu.SubMenuBuilder;
 import android.support.v7.internal.widget.DecorToolbar;
 import android.support.v7.internal.widget.RtlSpacingHelper;
 import android.support.v7.internal.widget.TintManager;
 import android.support.v7.internal.widget.TintTypedArray;
 import android.support.v7.internal.widget.ToolbarWidgetWrapper;
 import android.support.v7.internal.widget.ViewUtils;
+import android.support.v7.view.CollapsibleActionView;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -61,7 +65,7 @@ public class Toolbar extends ViewGroup
   private boolean mEatingHover;
   private boolean mEatingTouch;
   View mExpandedActionView;
-  private Toolbar.ExpandedActionViewMenuPresenter mExpandedMenuPresenter;
+  private ExpandedActionViewMenuPresenter mExpandedMenuPresenter;
   private int mGravity = 8388627;
   private ImageView mLogoView;
   private int mMaxButtonHeight;
@@ -104,7 +108,15 @@ public class Toolbar extends ViewGroup
   public Toolbar(Context paramContext, @Nullable AttributeSet paramAttributeSet, int paramInt)
   {
     super(paramContext, paramAttributeSet, paramInt);
-    Toolbar.1 local1 = new Toolbar.1(this);
+    ActionMenuView.OnMenuItemClickListener local1 = new ActionMenuView.OnMenuItemClickListener()
+    {
+      public boolean onMenuItemClick(MenuItem paramAnonymousMenuItem)
+      {
+        if (Toolbar.this.mOnMenuItemClickListener != null)
+          return Toolbar.this.mOnMenuItemClickListener.onMenuItemClick(paramAnonymousMenuItem);
+        return false;
+      }
+    };
     this.mMenuViewItemClickListener = local1;
     Runnable local2 = new Runnable()
     {
@@ -180,7 +192,7 @@ public class Toolbar extends ViewGroup
       for (int n = j - 1; n >= 0; n--)
       {
         View localView2 = getChildAt(n);
-        Toolbar.LayoutParams localLayoutParams2 = (Toolbar.LayoutParams)localView2.getLayoutParams();
+        LayoutParams localLayoutParams2 = (LayoutParams)localView2.getLayoutParams();
         if ((localLayoutParams2.mViewType == 0) && (shouldLayout(localView2)) && (getChildHorizontalGravity(localLayoutParams2.gravity) == k))
           paramList.add(localView2);
       }
@@ -189,7 +201,7 @@ public class Toolbar extends ViewGroup
     for (int m = 0; m < j; m++)
     {
       View localView1 = getChildAt(m);
-      Toolbar.LayoutParams localLayoutParams1 = (Toolbar.LayoutParams)localView1.getLayoutParams();
+      LayoutParams localLayoutParams1 = (LayoutParams)localView1.getLayoutParams();
       if ((localLayoutParams1.mViewType == 0) && (shouldLayout(localView1)) && (getChildHorizontalGravity(localLayoutParams1.gravity) == k))
         paramList.add(localView1);
     }
@@ -198,7 +210,7 @@ public class Toolbar extends ViewGroup
   private void addSystemView(View paramView)
   {
     ViewGroup.LayoutParams localLayoutParams = paramView.getLayoutParams();
-    Toolbar.LayoutParams localLayoutParams1;
+    LayoutParams localLayoutParams1;
     if (localLayoutParams == null)
       localLayoutParams1 = generateDefaultLayoutParams();
     while (true)
@@ -209,7 +221,7 @@ public class Toolbar extends ViewGroup
       if (!checkLayoutParams(localLayoutParams))
         localLayoutParams1 = generateLayoutParams(localLayoutParams);
       else
-        localLayoutParams1 = (Toolbar.LayoutParams)localLayoutParams;
+        localLayoutParams1 = (LayoutParams)localLayoutParams;
     }
   }
 
@@ -220,7 +232,7 @@ public class Toolbar extends ViewGroup
       this.mCollapseButtonView = new ImageButton(getContext(), null, R.attr.toolbarNavigationButtonStyle);
       this.mCollapseButtonView.setImageDrawable(this.mCollapseIcon);
       this.mCollapseButtonView.setContentDescription(this.mCollapseDescription);
-      Toolbar.LayoutParams localLayoutParams = generateDefaultLayoutParams();
+      LayoutParams localLayoutParams = generateDefaultLayoutParams();
       localLayoutParams.gravity = (0x800003 | 0x70 & this.mButtonGravity);
       localLayoutParams.mViewType = 2;
       this.mCollapseButtonView.setLayoutParams(localLayoutParams);
@@ -247,7 +259,7 @@ public class Toolbar extends ViewGroup
     {
       MenuBuilder localMenuBuilder = (MenuBuilder)this.mMenuView.getMenu();
       if (this.mExpandedMenuPresenter == null)
-        this.mExpandedMenuPresenter = new Toolbar.ExpandedActionViewMenuPresenter(this, null);
+        this.mExpandedMenuPresenter = new ExpandedActionViewMenuPresenter(null);
       this.mMenuView.setExpandedActionViewsExclusive(true);
       localMenuBuilder.addMenuPresenter(this.mExpandedMenuPresenter, this.mPopupContext);
     }
@@ -261,7 +273,7 @@ public class Toolbar extends ViewGroup
       this.mMenuView.setPopupTheme(this.mPopupTheme);
       this.mMenuView.setOnMenuItemClickListener(this.mMenuViewItemClickListener);
       this.mMenuView.setMenuCallbacks(this.mActionMenuPresenterCallback, this.mMenuBuilderCallback);
-      Toolbar.LayoutParams localLayoutParams = generateDefaultLayoutParams();
+      LayoutParams localLayoutParams = generateDefaultLayoutParams();
       localLayoutParams.gravity = (0x800005 | 0x70 & this.mButtonGravity);
       this.mMenuView.setLayoutParams(localLayoutParams);
       addSystemView(this.mMenuView);
@@ -273,7 +285,7 @@ public class Toolbar extends ViewGroup
     if (this.mNavButtonView == null)
     {
       this.mNavButtonView = new ImageButton(getContext(), null, R.attr.toolbarNavigationButtonStyle);
-      Toolbar.LayoutParams localLayoutParams = generateDefaultLayoutParams();
+      LayoutParams localLayoutParams = generateDefaultLayoutParams();
       localLayoutParams.gravity = (0x800003 | 0x70 & this.mButtonGravity);
       this.mNavButtonView.setLayoutParams(localLayoutParams);
     }
@@ -303,7 +315,7 @@ public class Toolbar extends ViewGroup
 
   private int getChildTop(View paramView, int paramInt)
   {
-    Toolbar.LayoutParams localLayoutParams = (Toolbar.LayoutParams)paramView.getLayoutParams();
+    LayoutParams localLayoutParams = (LayoutParams)paramView.getLayoutParams();
     int i = paramView.getMeasuredHeight();
     int j;
     int k;
@@ -380,7 +392,7 @@ public class Toolbar extends ViewGroup
     for (int n = 0; n < m; n++)
     {
       View localView = (View)paramList.get(n);
-      Toolbar.LayoutParams localLayoutParams = (Toolbar.LayoutParams)localView.getLayoutParams();
+      LayoutParams localLayoutParams = (LayoutParams)localView.getLayoutParams();
       int i1 = localLayoutParams.leftMargin - i;
       int i2 = localLayoutParams.rightMargin - j;
       int i3 = Math.max(0, i1);
@@ -394,12 +406,12 @@ public class Toolbar extends ViewGroup
 
   private static boolean isCustomView(View paramView)
   {
-    return ((Toolbar.LayoutParams)paramView.getLayoutParams()).mViewType == 0;
+    return ((LayoutParams)paramView.getLayoutParams()).mViewType == 0;
   }
 
   private int layoutChildLeft(View paramView, int paramInt1, int[] paramArrayOfInt, int paramInt2)
   {
-    Toolbar.LayoutParams localLayoutParams = (Toolbar.LayoutParams)paramView.getLayoutParams();
+    LayoutParams localLayoutParams = (LayoutParams)paramView.getLayoutParams();
     int i = localLayoutParams.leftMargin - paramArrayOfInt[0];
     int j = paramInt1 + Math.max(0, i);
     paramArrayOfInt[0] = Math.max(0, -i);
@@ -411,7 +423,7 @@ public class Toolbar extends ViewGroup
 
   private int layoutChildRight(View paramView, int paramInt1, int[] paramArrayOfInt, int paramInt2)
   {
-    Toolbar.LayoutParams localLayoutParams = (Toolbar.LayoutParams)paramView.getLayoutParams();
+    LayoutParams localLayoutParams = (LayoutParams)paramView.getLayoutParams();
     int i = localLayoutParams.rightMargin - paramArrayOfInt[1];
     int j = paramInt1 - Math.max(0, i);
     paramArrayOfInt[1] = Math.max(0, -i);
@@ -463,7 +475,7 @@ public class Toolbar extends ViewGroup
     if (j < i)
     {
       View localView = getChildAt(j);
-      if ((((Toolbar.LayoutParams)localView.getLayoutParams()).mViewType != 2) && (localView != this.mMenuView))
+      if ((((LayoutParams)localView.getLayoutParams()).mViewType != 2) && (localView != this.mMenuView))
         if (!paramBoolean)
           break label64;
       label64: for (int k = 8; ; k = 0)
@@ -498,7 +510,7 @@ public class Toolbar extends ViewGroup
 
   private void updateChildVisibilityForExpandedActionView(View paramView)
   {
-    if ((((Toolbar.LayoutParams)paramView.getLayoutParams()).mViewType != 2) && (paramView != this.mMenuView))
+    if ((((LayoutParams)paramView.getLayoutParams()).mViewType != 2) && (paramView != this.mMenuView))
       if (this.mExpandedActionView == null)
         break label38;
     label38: for (int i = 8; ; i = 0)
@@ -515,7 +527,7 @@ public class Toolbar extends ViewGroup
 
   protected boolean checkLayoutParams(ViewGroup.LayoutParams paramLayoutParams)
   {
-    return (super.checkLayoutParams(paramLayoutParams)) && ((paramLayoutParams instanceof Toolbar.LayoutParams));
+    return (super.checkLayoutParams(paramLayoutParams)) && ((paramLayoutParams instanceof LayoutParams));
   }
 
   public void collapseActionView()
@@ -535,25 +547,25 @@ public class Toolbar extends ViewGroup
       this.mMenuView.dismissPopupMenus();
   }
 
-  protected Toolbar.LayoutParams generateDefaultLayoutParams()
+  protected LayoutParams generateDefaultLayoutParams()
   {
-    return new Toolbar.LayoutParams(-2, -2);
+    return new LayoutParams(-2, -2);
   }
 
-  public Toolbar.LayoutParams generateLayoutParams(AttributeSet paramAttributeSet)
+  public LayoutParams generateLayoutParams(AttributeSet paramAttributeSet)
   {
-    return new Toolbar.LayoutParams(getContext(), paramAttributeSet);
+    return new LayoutParams(getContext(), paramAttributeSet);
   }
 
-  protected Toolbar.LayoutParams generateLayoutParams(ViewGroup.LayoutParams paramLayoutParams)
+  protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams paramLayoutParams)
   {
-    if ((paramLayoutParams instanceof Toolbar.LayoutParams))
-      return new Toolbar.LayoutParams((Toolbar.LayoutParams)paramLayoutParams);
+    if ((paramLayoutParams instanceof LayoutParams))
+      return new LayoutParams((LayoutParams)paramLayoutParams);
     if ((paramLayoutParams instanceof ActionBar.LayoutParams))
-      return new Toolbar.LayoutParams((ActionBar.LayoutParams)paramLayoutParams);
+      return new LayoutParams((ActionBar.LayoutParams)paramLayoutParams);
     if ((paramLayoutParams instanceof ViewGroup.MarginLayoutParams))
-      return new Toolbar.LayoutParams((ViewGroup.MarginLayoutParams)paramLayoutParams);
-    return new Toolbar.LayoutParams(paramLayoutParams);
+      return new LayoutParams((ViewGroup.MarginLayoutParams)paramLayoutParams);
+    return new LayoutParams(paramLayoutParams);
   }
 
   public int getContentInsetEnd()
@@ -718,8 +730,8 @@ public class Toolbar extends ViewGroup
     int i10;
     TextView localTextView1;
     label437: TextView localTextView2;
-    label448: Toolbar.LayoutParams localLayoutParams1;
-    Toolbar.LayoutParams localLayoutParams2;
+    label448: LayoutParams localLayoutParams1;
+    LayoutParams localLayoutParams2;
     int i11;
     label501: int i40;
     label582: int i12;
@@ -779,12 +791,12 @@ public class Toolbar extends ViewGroup
       i10 = 0;
       if (bool1)
       {
-        Toolbar.LayoutParams localLayoutParams8 = (Toolbar.LayoutParams)this.mTitleTextView.getLayoutParams();
+        LayoutParams localLayoutParams8 = (LayoutParams)this.mTitleTextView.getLayoutParams();
         i10 = 0 + (localLayoutParams8.topMargin + this.mTitleTextView.getMeasuredHeight() + localLayoutParams8.bottomMargin);
       }
       if (bool2)
       {
-        Toolbar.LayoutParams localLayoutParams7 = (Toolbar.LayoutParams)this.mSubtitleTextView.getLayoutParams();
+        LayoutParams localLayoutParams7 = (LayoutParams)this.mSubtitleTextView.getLayoutParams();
         i10 += localLayoutParams7.topMargin + this.mSubtitleTextView.getMeasuredHeight() + localLayoutParams7.bottomMargin;
       }
       if ((bool1) || (bool2))
@@ -795,8 +807,8 @@ public class Toolbar extends ViewGroup
         if (!bool2)
           break label985;
         localTextView2 = this.mSubtitleTextView;
-        localLayoutParams1 = (Toolbar.LayoutParams)localTextView1.getLayoutParams();
-        localLayoutParams2 = (Toolbar.LayoutParams)localTextView2.getLayoutParams();
+        localLayoutParams1 = (LayoutParams)localTextView1.getLayoutParams();
+        localLayoutParams2 = (LayoutParams)localTextView2.getLayoutParams();
         if (((!bool1) || (this.mTitleTextView.getMeasuredWidth() <= 0)) && ((!bool2) || (this.mSubtitleTextView.getMeasuredWidth() <= 0)))
           break label994;
         i11 = 1;
@@ -829,7 +841,7 @@ public class Toolbar extends ViewGroup
       int i34 = i9;
       if (bool1)
       {
-        Toolbar.LayoutParams localLayoutParams6 = (Toolbar.LayoutParams)this.mTitleTextView.getLayoutParams();
+        LayoutParams localLayoutParams6 = (LayoutParams)this.mTitleTextView.getLayoutParams();
         int i38 = i33 - this.mTitleTextView.getMeasuredWidth();
         int i39 = i12 + this.mTitleTextView.getMeasuredHeight();
         this.mTitleTextView.layout(i38, i12, i33, i39);
@@ -838,7 +850,7 @@ public class Toolbar extends ViewGroup
       }
       if (bool2)
       {
-        Toolbar.LayoutParams localLayoutParams5 = (Toolbar.LayoutParams)this.mSubtitleTextView.getLayoutParams();
+        LayoutParams localLayoutParams5 = (LayoutParams)this.mSubtitleTextView.getLayoutParams();
         int i35 = i12 + localLayoutParams5.topMargin;
         int i36 = i34 - this.mSubtitleTextView.getMeasuredWidth();
         int i37 = i35 + this.mSubtitleTextView.getMeasuredHeight();
@@ -890,7 +902,7 @@ public class Toolbar extends ViewGroup
       int i16 = i7;
       if (bool1)
       {
-        Toolbar.LayoutParams localLayoutParams4 = (Toolbar.LayoutParams)this.mTitleTextView.getLayoutParams();
+        LayoutParams localLayoutParams4 = (LayoutParams)this.mTitleTextView.getLayoutParams();
         int i29 = i15 + this.mTitleTextView.getMeasuredWidth();
         int i30 = i12 + this.mTitleTextView.getMeasuredHeight();
         this.mTitleTextView.layout(i15, i12, i29, i30);
@@ -899,7 +911,7 @@ public class Toolbar extends ViewGroup
       }
       if (bool2)
       {
-        Toolbar.LayoutParams localLayoutParams3 = (Toolbar.LayoutParams)this.mSubtitleTextView.getLayoutParams();
+        LayoutParams localLayoutParams3 = (LayoutParams)this.mSubtitleTextView.getLayoutParams();
         int i26 = i12 + localLayoutParams3.topMargin;
         int i27 = i16 + this.mSubtitleTextView.getMeasuredWidth();
         int i28 = i26 + this.mSubtitleTextView.getMeasuredHeight();
@@ -1005,7 +1017,7 @@ public class Toolbar extends ViewGroup
       if (i7 >= i6)
         break label631;
       localView = getChildAt(i7);
-      if ((((Toolbar.LayoutParams)localView.getLayoutParams()).mViewType == 0) && (shouldLayout(localView)))
+      if ((((LayoutParams)localView.getLayoutParams()).mViewType == 0) && (shouldLayout(localView)))
         break label572;
     }
     while (true)
@@ -1184,7 +1196,7 @@ public class Toolbar extends ViewGroup
       localMenuBuilder.removeMenuPresenter(this.mExpandedMenuPresenter);
     }
     if (this.mExpandedMenuPresenter == null)
-      this.mExpandedMenuPresenter = new Toolbar.ExpandedActionViewMenuPresenter(this, null);
+      this.mExpandedMenuPresenter = new ExpandedActionViewMenuPresenter(null);
     paramActionMenuPresenter.setExpandedActionViewsExclusive(true);
     if (paramMenuBuilder != null)
     {
@@ -1385,6 +1397,186 @@ public class Toolbar extends ViewGroup
   public boolean showOverflowMenu()
   {
     return (this.mMenuView != null) && (this.mMenuView.showOverflowMenu());
+  }
+
+  private class ExpandedActionViewMenuPresenter
+    implements MenuPresenter
+  {
+    MenuItemImpl mCurrentExpandedItem;
+    MenuBuilder mMenu;
+
+    private ExpandedActionViewMenuPresenter()
+    {
+    }
+
+    public boolean collapseItemActionView(MenuBuilder paramMenuBuilder, MenuItemImpl paramMenuItemImpl)
+    {
+      if ((Toolbar.this.mExpandedActionView instanceof CollapsibleActionView))
+        ((CollapsibleActionView)Toolbar.this.mExpandedActionView).onActionViewCollapsed();
+      Toolbar.this.removeView(Toolbar.this.mExpandedActionView);
+      Toolbar.this.removeView(Toolbar.this.mCollapseButtonView);
+      Toolbar.this.mExpandedActionView = null;
+      Toolbar.this.setChildVisibilityForExpandedActionView(false);
+      this.mCurrentExpandedItem = null;
+      Toolbar.this.requestLayout();
+      paramMenuItemImpl.setActionViewExpanded(false);
+      return true;
+    }
+
+    public boolean expandItemActionView(MenuBuilder paramMenuBuilder, MenuItemImpl paramMenuItemImpl)
+    {
+      Toolbar.this.ensureCollapseButtonView();
+      if (Toolbar.this.mCollapseButtonView.getParent() != Toolbar.this)
+        Toolbar.this.addView(Toolbar.this.mCollapseButtonView);
+      Toolbar.this.mExpandedActionView = paramMenuItemImpl.getActionView();
+      this.mCurrentExpandedItem = paramMenuItemImpl;
+      if (Toolbar.this.mExpandedActionView.getParent() != Toolbar.this)
+      {
+        Toolbar.LayoutParams localLayoutParams = Toolbar.this.generateDefaultLayoutParams();
+        localLayoutParams.gravity = (0x800003 | 0x70 & Toolbar.this.mButtonGravity);
+        localLayoutParams.mViewType = 2;
+        Toolbar.this.mExpandedActionView.setLayoutParams(localLayoutParams);
+        Toolbar.this.addView(Toolbar.this.mExpandedActionView);
+      }
+      Toolbar.this.setChildVisibilityForExpandedActionView(true);
+      Toolbar.this.requestLayout();
+      paramMenuItemImpl.setActionViewExpanded(true);
+      if ((Toolbar.this.mExpandedActionView instanceof CollapsibleActionView))
+        ((CollapsibleActionView)Toolbar.this.mExpandedActionView).onActionViewExpanded();
+      return true;
+    }
+
+    public boolean flagActionItems()
+    {
+      return false;
+    }
+
+    public int getId()
+    {
+      return 0;
+    }
+
+    public MenuView getMenuView(ViewGroup paramViewGroup)
+    {
+      return null;
+    }
+
+    public void initForMenu(Context paramContext, MenuBuilder paramMenuBuilder)
+    {
+      if ((this.mMenu != null) && (this.mCurrentExpandedItem != null))
+        this.mMenu.collapseItemActionView(this.mCurrentExpandedItem);
+      this.mMenu = paramMenuBuilder;
+    }
+
+    public void onCloseMenu(MenuBuilder paramMenuBuilder, boolean paramBoolean)
+    {
+    }
+
+    public void onRestoreInstanceState(Parcelable paramParcelable)
+    {
+    }
+
+    public Parcelable onSaveInstanceState()
+    {
+      return null;
+    }
+
+    public boolean onSubMenuSelected(SubMenuBuilder paramSubMenuBuilder)
+    {
+      return false;
+    }
+
+    public void setCallback(MenuPresenter.Callback paramCallback)
+    {
+    }
+
+    public void updateMenuView(boolean paramBoolean)
+    {
+      int i;
+      int j;
+      if (this.mCurrentExpandedItem != null)
+      {
+        MenuBuilder localMenuBuilder = this.mMenu;
+        i = 0;
+        if (localMenuBuilder != null)
+          j = this.mMenu.size();
+      }
+      for (int k = 0; ; k++)
+      {
+        i = 0;
+        if (k < j)
+        {
+          if (this.mMenu.getItem(k) == this.mCurrentExpandedItem)
+            i = 1;
+        }
+        else
+        {
+          if (i == 0)
+            collapseItemActionView(this.mMenu, this.mCurrentExpandedItem);
+          return;
+        }
+      }
+    }
+  }
+
+  public static class LayoutParams extends ActionBar.LayoutParams
+  {
+    static final int CUSTOM = 0;
+    static final int EXPANDED = 2;
+    static final int SYSTEM = 1;
+    int mViewType = 0;
+
+    public LayoutParams(int paramInt)
+    {
+      this(-2, -1, paramInt);
+    }
+
+    public LayoutParams(int paramInt1, int paramInt2)
+    {
+      super(paramInt2);
+      this.gravity = 8388627;
+    }
+
+    public LayoutParams(int paramInt1, int paramInt2, int paramInt3)
+    {
+      super(paramInt2);
+      this.gravity = paramInt3;
+    }
+
+    public LayoutParams(Context paramContext, AttributeSet paramAttributeSet)
+    {
+      super(paramAttributeSet);
+    }
+
+    public LayoutParams(ActionBar.LayoutParams paramLayoutParams)
+    {
+      super();
+    }
+
+    public LayoutParams(LayoutParams paramLayoutParams)
+    {
+      super();
+      this.mViewType = paramLayoutParams.mViewType;
+    }
+
+    public LayoutParams(ViewGroup.LayoutParams paramLayoutParams)
+    {
+      super();
+    }
+
+    public LayoutParams(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
+    {
+      super();
+      copyMarginsFromCompat(paramMarginLayoutParams);
+    }
+
+    void copyMarginsFromCompat(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
+    {
+      this.leftMargin = paramMarginLayoutParams.leftMargin;
+      this.topMargin = paramMarginLayoutParams.topMargin;
+      this.rightMargin = paramMarginLayoutParams.rightMargin;
+      this.bottomMargin = paramMarginLayoutParams.bottomMargin;
+    }
   }
 
   public static abstract interface OnMenuItemClickListener

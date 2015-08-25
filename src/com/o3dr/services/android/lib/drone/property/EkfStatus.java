@@ -34,6 +34,17 @@ public class EkfStatus
     this.flags = new BitSet(16);
   }
 
+  public EkfStatus(int paramInt, float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5)
+  {
+    this();
+    this.compassVariance = paramFloat1;
+    this.horizontalPositionVariance = paramFloat2;
+    this.terrainAltitudeVariance = paramFloat3;
+    this.velocityVariance = paramFloat4;
+    this.verticalPositionVariance = paramFloat5;
+    fromShortToBitSet(paramInt);
+  }
+
   private EkfStatus(Parcel paramParcel)
   {
     this.velocityVariance = paramParcel.readFloat();
@@ -44,18 +55,7 @@ public class EkfStatus
     this.flags = ((BitSet)paramParcel.readSerializable());
   }
 
-  public EkfStatus(short paramShort, float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5)
-  {
-    this();
-    this.compassVariance = paramFloat1;
-    this.horizontalPositionVariance = paramFloat2;
-    this.terrainAltitudeVariance = paramFloat3;
-    this.velocityVariance = paramFloat4;
-    this.verticalPositionVariance = paramFloat5;
-    fromShortToBitSet(paramShort);
-  }
-
-  private void fromShortToBitSet(short paramShort)
+  private void fromShortToBitSet(int paramInt)
   {
     EkfFlags[] arrayOfEkfFlags = EkfFlags.values();
     int i = arrayOfEkfFlags.length;
@@ -63,7 +63,7 @@ public class EkfStatus
     if (j < i)
     {
       BitSet localBitSet = this.flags;
-      if ((paramShort & arrayOfEkfFlags[j].value) != 0);
+      if ((paramInt & arrayOfEkfFlags[j].value) != 0);
       for (boolean bool = true; ; bool = false)
       {
         localBitSet.set(j, bool);

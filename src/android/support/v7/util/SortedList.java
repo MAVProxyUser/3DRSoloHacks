@@ -11,7 +11,7 @@ public class SortedList<T>
   public static final int INVALID_POSITION = -1;
   private static final int LOOKUP = 4;
   private static final int MIN_CAPACITY = 10;
-  private SortedList.BatchedCallback mBatchedCallback;
+  private BatchedCallback mBatchedCallback;
   private Callback mCallback;
   T[] mData;
   private int mSize;
@@ -177,10 +177,10 @@ public class SortedList<T>
 
   public void beginBatchedUpdates()
   {
-    if ((this.mCallback instanceof SortedList.BatchedCallback))
+    if ((this.mCallback instanceof BatchedCallback))
       return;
     if (this.mBatchedCallback == null)
-      this.mBatchedCallback = new SortedList.BatchedCallback(this.mCallback);
+      this.mBatchedCallback = new BatchedCallback(this.mCallback);
     this.mCallback = this.mBatchedCallback;
   }
 
@@ -196,10 +196,10 @@ public class SortedList<T>
 
   public void endBatchedUpdates()
   {
-    if ((this.mCallback instanceof SortedList.BatchedCallback))
-      ((SortedList.BatchedCallback)this.mCallback).dispatchLastEvent();
+    if ((this.mCallback instanceof BatchedCallback))
+      ((BatchedCallback)this.mCallback).dispatchLastEvent();
     if (this.mCallback == this.mBatchedCallback)
-      this.mCallback = SortedList.BatchedCallback.access$000(this.mBatchedCallback);
+      this.mCallback = this.mBatchedCallback.mWrappedCallback;
   }
 
   public T get(int paramInt)
@@ -267,6 +267,110 @@ public class SortedList<T>
     }
     while (paramInt == j);
     this.mCallback.onMoved(paramInt, j);
+  }
+
+  public static class BatchedCallback<T2> extends SortedList.Callback<T2>
+  {
+    static final int TYPE_ADD = 1;
+    static final int TYPE_CHANGE = 3;
+    static final int TYPE_MOVE = 4;
+    static final int TYPE_NONE = 0;
+    static final int TYPE_REMOVE = 2;
+    int mLastEventCount = -1;
+    int mLastEventPosition = -1;
+    int mLastEventType = 0;
+    private final SortedList.Callback<T2> mWrappedCallback;
+
+    public BatchedCallback(SortedList.Callback<T2> paramCallback)
+    {
+      this.mWrappedCallback = paramCallback;
+    }
+
+    public boolean areContentsTheSame(T2 paramT21, T2 paramT22)
+    {
+      return this.mWrappedCallback.areContentsTheSame(paramT21, paramT22);
+    }
+
+    public boolean areItemsTheSame(T2 paramT21, T2 paramT22)
+    {
+      return this.mWrappedCallback.areItemsTheSame(paramT21, paramT22);
+    }
+
+    public int compare(T2 paramT21, T2 paramT22)
+    {
+      return this.mWrappedCallback.compare(paramT21, paramT22);
+    }
+
+    public void dispatchLastEvent()
+    {
+      if (this.mLastEventType == 0)
+        return;
+      switch (this.mLastEventType)
+      {
+      default:
+      case 1:
+      case 2:
+      case 3:
+      }
+      while (true)
+      {
+        this.mLastEventType = 0;
+        return;
+        this.mWrappedCallback.onInserted(this.mLastEventPosition, this.mLastEventCount);
+        continue;
+        this.mWrappedCallback.onRemoved(this.mLastEventPosition, this.mLastEventCount);
+        continue;
+        this.mWrappedCallback.onChanged(this.mLastEventPosition, this.mLastEventCount);
+      }
+    }
+
+    public void onChanged(int paramInt1, int paramInt2)
+    {
+      if ((this.mLastEventType == 3) && (paramInt1 <= this.mLastEventPosition + this.mLastEventCount) && (paramInt1 + paramInt2 >= this.mLastEventPosition))
+      {
+        int i = this.mLastEventPosition + this.mLastEventCount;
+        this.mLastEventPosition = Math.min(paramInt1, this.mLastEventPosition);
+        this.mLastEventCount = (Math.max(i, paramInt1 + paramInt2) - this.mLastEventPosition);
+        return;
+      }
+      dispatchLastEvent();
+      this.mLastEventPosition = paramInt1;
+      this.mLastEventCount = paramInt2;
+      this.mLastEventType = 3;
+    }
+
+    public void onInserted(int paramInt1, int paramInt2)
+    {
+      if ((this.mLastEventType == 1) && (paramInt1 >= this.mLastEventPosition) && (paramInt1 <= this.mLastEventPosition + this.mLastEventCount))
+      {
+        this.mLastEventCount = (paramInt2 + this.mLastEventCount);
+        this.mLastEventPosition = Math.min(paramInt1, this.mLastEventPosition);
+        return;
+      }
+      dispatchLastEvent();
+      this.mLastEventPosition = paramInt1;
+      this.mLastEventCount = paramInt2;
+      this.mLastEventType = 1;
+    }
+
+    public void onMoved(int paramInt1, int paramInt2)
+    {
+      dispatchLastEvent();
+      this.mWrappedCallback.onMoved(paramInt1, paramInt2);
+    }
+
+    public void onRemoved(int paramInt1, int paramInt2)
+    {
+      if ((this.mLastEventType == 2) && (this.mLastEventPosition == paramInt1))
+      {
+        this.mLastEventCount = (paramInt2 + this.mLastEventCount);
+        return;
+      }
+      dispatchLastEvent();
+      this.mLastEventPosition = paramInt1;
+      this.mLastEventCount = paramInt2;
+      this.mLastEventType = 2;
+    }
   }
 
   public static abstract class Callback<T2>
