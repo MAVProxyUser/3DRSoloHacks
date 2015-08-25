@@ -17,15 +17,15 @@ public class AccessibilityDelegateCompat
   static
   {
     if (Build.VERSION.SDK_INT >= 16)
-      IMPL = new AccessibilityDelegateJellyBeanImpl();
+      IMPL = new AccessibilityDelegateCompat.AccessibilityDelegateJellyBeanImpl();
     while (true)
     {
       DEFAULT_DELEGATE = IMPL.newAccessiblityDelegateDefaultImpl();
       return;
       if (Build.VERSION.SDK_INT >= 14)
-        IMPL = new AccessibilityDelegateIcsImpl();
+        IMPL = new AccessibilityDelegateCompat.AccessibilityDelegateIcsImpl();
       else
-        IMPL = new AccessibilityDelegateStubImpl();
+        IMPL = new AccessibilityDelegateCompat.AccessibilityDelegateStubImpl();
     }
   }
 
@@ -79,90 +79,6 @@ public class AccessibilityDelegateCompat
     IMPL.sendAccessibilityEventUnchecked(DEFAULT_DELEGATE, paramView, paramAccessibilityEvent);
   }
 
-  static class AccessibilityDelegateIcsImpl extends AccessibilityDelegateCompat.AccessibilityDelegateStubImpl
-  {
-    public boolean dispatchPopulateAccessibilityEvent(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-      return AccessibilityDelegateCompatIcs.dispatchPopulateAccessibilityEvent(paramObject, paramView, paramAccessibilityEvent);
-    }
-
-    public Object newAccessiblityDelegateBridge(final AccessibilityDelegateCompat paramAccessibilityDelegateCompat)
-    {
-      return AccessibilityDelegateCompatIcs.newAccessibilityDelegateBridge(new AccessibilityDelegateCompatIcs.AccessibilityDelegateBridge()
-      {
-        public boolean dispatchPopulateAccessibilityEvent(View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          return paramAccessibilityDelegateCompat.dispatchPopulateAccessibilityEvent(paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-
-        public void onInitializeAccessibilityEvent(View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          paramAccessibilityDelegateCompat.onInitializeAccessibilityEvent(paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-
-        public void onInitializeAccessibilityNodeInfo(View paramAnonymousView, Object paramAnonymousObject)
-        {
-          paramAccessibilityDelegateCompat.onInitializeAccessibilityNodeInfo(paramAnonymousView, new AccessibilityNodeInfoCompat(paramAnonymousObject));
-        }
-
-        public void onPopulateAccessibilityEvent(View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          paramAccessibilityDelegateCompat.onPopulateAccessibilityEvent(paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-
-        public boolean onRequestSendAccessibilityEvent(ViewGroup paramAnonymousViewGroup, View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          return paramAccessibilityDelegateCompat.onRequestSendAccessibilityEvent(paramAnonymousViewGroup, paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-
-        public void sendAccessibilityEvent(View paramAnonymousView, int paramAnonymousInt)
-        {
-          paramAccessibilityDelegateCompat.sendAccessibilityEvent(paramAnonymousView, paramAnonymousInt);
-        }
-
-        public void sendAccessibilityEventUnchecked(View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          paramAccessibilityDelegateCompat.sendAccessibilityEventUnchecked(paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-      });
-    }
-
-    public Object newAccessiblityDelegateDefaultImpl()
-    {
-      return AccessibilityDelegateCompatIcs.newAccessibilityDelegateDefaultImpl();
-    }
-
-    public void onInitializeAccessibilityEvent(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-      AccessibilityDelegateCompatIcs.onInitializeAccessibilityEvent(paramObject, paramView, paramAccessibilityEvent);
-    }
-
-    public void onInitializeAccessibilityNodeInfo(Object paramObject, View paramView, AccessibilityNodeInfoCompat paramAccessibilityNodeInfoCompat)
-    {
-      AccessibilityDelegateCompatIcs.onInitializeAccessibilityNodeInfo(paramObject, paramView, paramAccessibilityNodeInfoCompat.getInfo());
-    }
-
-    public void onPopulateAccessibilityEvent(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-      AccessibilityDelegateCompatIcs.onPopulateAccessibilityEvent(paramObject, paramView, paramAccessibilityEvent);
-    }
-
-    public boolean onRequestSendAccessibilityEvent(Object paramObject, ViewGroup paramViewGroup, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-      return AccessibilityDelegateCompatIcs.onRequestSendAccessibilityEvent(paramObject, paramViewGroup, paramView, paramAccessibilityEvent);
-    }
-
-    public void sendAccessibilityEvent(Object paramObject, View paramView, int paramInt)
-    {
-      AccessibilityDelegateCompatIcs.sendAccessibilityEvent(paramObject, paramView, paramInt);
-    }
-
-    public void sendAccessibilityEventUnchecked(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-      AccessibilityDelegateCompatIcs.sendAccessibilityEventUnchecked(paramObject, paramView, paramAccessibilityEvent);
-    }
-  }
-
   static abstract interface AccessibilityDelegateImpl
   {
     public abstract boolean dispatchPopulateAccessibilityEvent(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent);
@@ -186,130 +102,6 @@ public class AccessibilityDelegateCompat
     public abstract void sendAccessibilityEvent(Object paramObject, View paramView, int paramInt);
 
     public abstract void sendAccessibilityEventUnchecked(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent);
-  }
-
-  static class AccessibilityDelegateJellyBeanImpl extends AccessibilityDelegateCompat.AccessibilityDelegateIcsImpl
-  {
-    public AccessibilityNodeProviderCompat getAccessibilityNodeProvider(Object paramObject, View paramView)
-    {
-      Object localObject = AccessibilityDelegateCompatJellyBean.getAccessibilityNodeProvider(paramObject, paramView);
-      if (localObject != null)
-        return new AccessibilityNodeProviderCompat(localObject);
-      return null;
-    }
-
-    public Object newAccessiblityDelegateBridge(final AccessibilityDelegateCompat paramAccessibilityDelegateCompat)
-    {
-      return AccessibilityDelegateCompatJellyBean.newAccessibilityDelegateBridge(new AccessibilityDelegateCompatJellyBean.AccessibilityDelegateBridgeJellyBean()
-      {
-        public boolean dispatchPopulateAccessibilityEvent(View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          return paramAccessibilityDelegateCompat.dispatchPopulateAccessibilityEvent(paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-
-        public Object getAccessibilityNodeProvider(View paramAnonymousView)
-        {
-          AccessibilityNodeProviderCompat localAccessibilityNodeProviderCompat = paramAccessibilityDelegateCompat.getAccessibilityNodeProvider(paramAnonymousView);
-          if (localAccessibilityNodeProviderCompat != null)
-            return localAccessibilityNodeProviderCompat.getProvider();
-          return null;
-        }
-
-        public void onInitializeAccessibilityEvent(View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          paramAccessibilityDelegateCompat.onInitializeAccessibilityEvent(paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-
-        public void onInitializeAccessibilityNodeInfo(View paramAnonymousView, Object paramAnonymousObject)
-        {
-          paramAccessibilityDelegateCompat.onInitializeAccessibilityNodeInfo(paramAnonymousView, new AccessibilityNodeInfoCompat(paramAnonymousObject));
-        }
-
-        public void onPopulateAccessibilityEvent(View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          paramAccessibilityDelegateCompat.onPopulateAccessibilityEvent(paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-
-        public boolean onRequestSendAccessibilityEvent(ViewGroup paramAnonymousViewGroup, View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          return paramAccessibilityDelegateCompat.onRequestSendAccessibilityEvent(paramAnonymousViewGroup, paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-
-        public boolean performAccessibilityAction(View paramAnonymousView, int paramAnonymousInt, Bundle paramAnonymousBundle)
-        {
-          return paramAccessibilityDelegateCompat.performAccessibilityAction(paramAnonymousView, paramAnonymousInt, paramAnonymousBundle);
-        }
-
-        public void sendAccessibilityEvent(View paramAnonymousView, int paramAnonymousInt)
-        {
-          paramAccessibilityDelegateCompat.sendAccessibilityEvent(paramAnonymousView, paramAnonymousInt);
-        }
-
-        public void sendAccessibilityEventUnchecked(View paramAnonymousView, AccessibilityEvent paramAnonymousAccessibilityEvent)
-        {
-          paramAccessibilityDelegateCompat.sendAccessibilityEventUnchecked(paramAnonymousView, paramAnonymousAccessibilityEvent);
-        }
-      });
-    }
-
-    public boolean performAccessibilityAction(Object paramObject, View paramView, int paramInt, Bundle paramBundle)
-    {
-      return AccessibilityDelegateCompatJellyBean.performAccessibilityAction(paramObject, paramView, paramInt, paramBundle);
-    }
-  }
-
-  static class AccessibilityDelegateStubImpl
-    implements AccessibilityDelegateCompat.AccessibilityDelegateImpl
-  {
-    public boolean dispatchPopulateAccessibilityEvent(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-      return false;
-    }
-
-    public AccessibilityNodeProviderCompat getAccessibilityNodeProvider(Object paramObject, View paramView)
-    {
-      return null;
-    }
-
-    public Object newAccessiblityDelegateBridge(AccessibilityDelegateCompat paramAccessibilityDelegateCompat)
-    {
-      return null;
-    }
-
-    public Object newAccessiblityDelegateDefaultImpl()
-    {
-      return null;
-    }
-
-    public void onInitializeAccessibilityEvent(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-    }
-
-    public void onInitializeAccessibilityNodeInfo(Object paramObject, View paramView, AccessibilityNodeInfoCompat paramAccessibilityNodeInfoCompat)
-    {
-    }
-
-    public void onPopulateAccessibilityEvent(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-    }
-
-    public boolean onRequestSendAccessibilityEvent(Object paramObject, ViewGroup paramViewGroup, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-      return true;
-    }
-
-    public boolean performAccessibilityAction(Object paramObject, View paramView, int paramInt, Bundle paramBundle)
-    {
-      return false;
-    }
-
-    public void sendAccessibilityEvent(Object paramObject, View paramView, int paramInt)
-    {
-    }
-
-    public void sendAccessibilityEventUnchecked(Object paramObject, View paramView, AccessibilityEvent paramAccessibilityEvent)
-    {
-    }
   }
 }
 

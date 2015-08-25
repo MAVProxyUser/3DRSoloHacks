@@ -1,12 +1,9 @@
 package android.support.v4.view;
 
-import android.content.Context;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.LayoutInflater.Factory;
 import android.view.LayoutInflater.Factory2;
-import android.view.View;
 import java.lang.reflect.Field;
 
 class LayoutInflaterCompatHC
@@ -44,7 +41,7 @@ class LayoutInflaterCompatHC
   static void setFactory(LayoutInflater paramLayoutInflater, LayoutInflaterFactory paramLayoutInflaterFactory)
   {
     if (paramLayoutInflaterFactory != null);
-    for (FactoryWrapperHC localFactoryWrapperHC = new FactoryWrapperHC(paramLayoutInflaterFactory); ; localFactoryWrapperHC = null)
+    for (LayoutInflaterCompatHC.FactoryWrapperHC localFactoryWrapperHC = new LayoutInflaterCompatHC.FactoryWrapperHC(paramLayoutInflaterFactory); ; localFactoryWrapperHC = null)
     {
       paramLayoutInflater.setFactory2(localFactoryWrapperHC);
       LayoutInflater.Factory localFactory = paramLayoutInflater.getFactory();
@@ -54,20 +51,6 @@ class LayoutInflaterCompatHC
       return;
     }
     forceSetFactory2(paramLayoutInflater, localFactoryWrapperHC);
-  }
-
-  static class FactoryWrapperHC extends LayoutInflaterCompatBase.FactoryWrapper
-    implements LayoutInflater.Factory2
-  {
-    FactoryWrapperHC(LayoutInflaterFactory paramLayoutInflaterFactory)
-    {
-      super();
-    }
-
-    public View onCreateView(View paramView, String paramString, Context paramContext, AttributeSet paramAttributeSet)
-    {
-      return this.mDelegateFactory.onCreateView(paramView, paramString, paramContext, paramAttributeSet);
-    }
   }
 }
 

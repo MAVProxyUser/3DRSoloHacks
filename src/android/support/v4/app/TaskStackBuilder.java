@@ -16,7 +16,7 @@ import java.util.Iterator;
 public class TaskStackBuilder
   implements Iterable<Intent>
 {
-  private static final TaskStackBuilderImpl IMPL = new TaskStackBuilderImplBase();
+  private static final TaskStackBuilderImpl IMPL = new TaskStackBuilder.TaskStackBuilderImplBase();
   private static final String TAG = "TaskStackBuilder";
   private final ArrayList<Intent> mIntents = new ArrayList();
   private final Context mSourceContext;
@@ -25,7 +25,7 @@ public class TaskStackBuilder
   {
     if (Build.VERSION.SDK_INT >= 11)
     {
-      IMPL = new TaskStackBuilderImplHoneycomb();
+      IMPL = new TaskStackBuilder.TaskStackBuilderImplHoneycomb();
       return;
     }
   }
@@ -180,37 +180,6 @@ public class TaskStackBuilder
   static abstract interface TaskStackBuilderImpl
   {
     public abstract PendingIntent getPendingIntent(Context paramContext, Intent[] paramArrayOfIntent, int paramInt1, int paramInt2, Bundle paramBundle);
-  }
-
-  static class TaskStackBuilderImplBase
-    implements TaskStackBuilder.TaskStackBuilderImpl
-  {
-    public PendingIntent getPendingIntent(Context paramContext, Intent[] paramArrayOfIntent, int paramInt1, int paramInt2, Bundle paramBundle)
-    {
-      Intent localIntent = new Intent(paramArrayOfIntent[(-1 + paramArrayOfIntent.length)]);
-      localIntent.addFlags(268435456);
-      return PendingIntent.getActivity(paramContext, paramInt1, localIntent, paramInt2);
-    }
-  }
-
-  static class TaskStackBuilderImplHoneycomb
-    implements TaskStackBuilder.TaskStackBuilderImpl
-  {
-    public PendingIntent getPendingIntent(Context paramContext, Intent[] paramArrayOfIntent, int paramInt1, int paramInt2, Bundle paramBundle)
-    {
-      paramArrayOfIntent[0] = new Intent(paramArrayOfIntent[0]).addFlags(268484608);
-      return TaskStackBuilderHoneycomb.getActivitiesPendingIntent(paramContext, paramInt1, paramArrayOfIntent, paramInt2);
-    }
-  }
-
-  static class TaskStackBuilderImplJellybean
-    implements TaskStackBuilder.TaskStackBuilderImpl
-  {
-    public PendingIntent getPendingIntent(Context paramContext, Intent[] paramArrayOfIntent, int paramInt1, int paramInt2, Bundle paramBundle)
-    {
-      paramArrayOfIntent[0] = new Intent(paramArrayOfIntent[0]).addFlags(268484608);
-      return TaskStackBuilderJellybean.getActivitiesPendingIntent(paramContext, paramInt1, paramArrayOfIntent, paramInt2, paramBundle);
-    }
   }
 }
 

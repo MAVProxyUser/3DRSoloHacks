@@ -1060,33 +1060,6 @@ public abstract class Channel
     }
   }
 
-  class PassiveInputStream extends Channel.MyPipedInputStream
-  {
-    PipedOutputStream out;
-
-    PassiveInputStream(PipedOutputStream arg2)
-      throws IOException
-    {
-      super(localPipedOutputStream);
-      this.out = localPipedOutputStream;
-    }
-
-    PassiveInputStream(PipedOutputStream paramInt, int arg3)
-      throws IOException
-    {
-      super(paramInt, i);
-      this.out = paramInt;
-    }
-
-    public void close()
-      throws IOException
-    {
-      if (this.out != null)
-        this.out.close();
-      this.out = null;
-    }
-  }
-
   class PassiveOutputStream extends PipedOutputStream
   {
     private Channel.MyPipedInputStream _sink = null;

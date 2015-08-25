@@ -7,23 +7,23 @@ import android.os.Build.VERSION;
 
 public class ConnectivityManagerCompat
 {
-  private static final ConnectivityManagerCompatImpl IMPL = new BaseConnectivityManagerCompatImpl();
+  private static final ConnectivityManagerCompatImpl IMPL = new ConnectivityManagerCompat.BaseConnectivityManagerCompatImpl();
 
   static
   {
     if (Build.VERSION.SDK_INT >= 16)
     {
-      IMPL = new JellyBeanConnectivityManagerCompatImpl();
+      IMPL = new ConnectivityManagerCompat.JellyBeanConnectivityManagerCompatImpl();
       return;
     }
     if (Build.VERSION.SDK_INT >= 13)
     {
-      IMPL = new HoneycombMR2ConnectivityManagerCompatImpl();
+      IMPL = new ConnectivityManagerCompat.HoneycombMR2ConnectivityManagerCompatImpl();
       return;
     }
     if (Build.VERSION.SDK_INT >= 8)
     {
-      IMPL = new GingerbreadConnectivityManagerCompatImpl();
+      IMPL = new ConnectivityManagerCompat.GingerbreadConnectivityManagerCompatImpl();
       return;
     }
   }
@@ -41,55 +41,9 @@ public class ConnectivityManagerCompat
     return IMPL.isActiveNetworkMetered(paramConnectivityManager);
   }
 
-  static class BaseConnectivityManagerCompatImpl
-    implements ConnectivityManagerCompat.ConnectivityManagerCompatImpl
-  {
-    public boolean isActiveNetworkMetered(ConnectivityManager paramConnectivityManager)
-    {
-      NetworkInfo localNetworkInfo = paramConnectivityManager.getActiveNetworkInfo();
-      if (localNetworkInfo == null)
-        return true;
-      switch (localNetworkInfo.getType())
-      {
-      case 0:
-      default:
-        return true;
-      case 1:
-      }
-      return false;
-    }
-  }
-
   static abstract interface ConnectivityManagerCompatImpl
   {
     public abstract boolean isActiveNetworkMetered(ConnectivityManager paramConnectivityManager);
-  }
-
-  static class GingerbreadConnectivityManagerCompatImpl
-    implements ConnectivityManagerCompat.ConnectivityManagerCompatImpl
-  {
-    public boolean isActiveNetworkMetered(ConnectivityManager paramConnectivityManager)
-    {
-      return ConnectivityManagerCompatGingerbread.isActiveNetworkMetered(paramConnectivityManager);
-    }
-  }
-
-  static class HoneycombMR2ConnectivityManagerCompatImpl
-    implements ConnectivityManagerCompat.ConnectivityManagerCompatImpl
-  {
-    public boolean isActiveNetworkMetered(ConnectivityManager paramConnectivityManager)
-    {
-      return ConnectivityManagerCompatHoneycombMR2.isActiveNetworkMetered(paramConnectivityManager);
-    }
-  }
-
-  static class JellyBeanConnectivityManagerCompatImpl
-    implements ConnectivityManagerCompat.ConnectivityManagerCompatImpl
-  {
-    public boolean isActiveNetworkMetered(ConnectivityManager paramConnectivityManager)
-    {
-      return ConnectivityManagerCompatJellyBean.isActiveNetworkMetered(paramConnectivityManager);
-    }
   }
 }
 

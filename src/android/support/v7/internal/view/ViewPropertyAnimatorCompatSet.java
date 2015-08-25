@@ -3,7 +3,6 @@ package android.support.v7.internal.view;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
-import android.view.View;
 import android.view.animation.Interpolator;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,42 +14,7 @@ public class ViewPropertyAnimatorCompatSet
   private Interpolator mInterpolator;
   private boolean mIsStarted;
   private ViewPropertyAnimatorListener mListener;
-  private final ViewPropertyAnimatorListenerAdapter mProxyListener = new ViewPropertyAnimatorListenerAdapter()
-  {
-    private int mProxyEndCount = 0;
-    private boolean mProxyStarted = false;
-
-    public void onAnimationEnd(View paramAnonymousView)
-    {
-      int i = 1 + this.mProxyEndCount;
-      this.mProxyEndCount = i;
-      if (i == ViewPropertyAnimatorCompatSet.this.mAnimators.size())
-      {
-        if (ViewPropertyAnimatorCompatSet.this.mListener != null)
-          ViewPropertyAnimatorCompatSet.this.mListener.onAnimationEnd(null);
-        onEnd();
-      }
-    }
-
-    public void onAnimationStart(View paramAnonymousView)
-    {
-      if (this.mProxyStarted);
-      do
-      {
-        return;
-        this.mProxyStarted = true;
-      }
-      while (ViewPropertyAnimatorCompatSet.this.mListener == null);
-      ViewPropertyAnimatorCompatSet.this.mListener.onAnimationStart(null);
-    }
-
-    void onEnd()
-    {
-      this.mProxyEndCount = 0;
-      this.mProxyStarted = false;
-      ViewPropertyAnimatorCompatSet.this.onAnimationsEnded();
-    }
-  };
+  private final ViewPropertyAnimatorListenerAdapter mProxyListener = new ViewPropertyAnimatorCompatSet.1(this);
 
   private void onAnimationsEnded()
   {

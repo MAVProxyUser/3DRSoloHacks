@@ -6,13 +6,13 @@ import android.view.View.OnTouchListener;
 
 public class ListPopupWindowCompat
 {
-  static final ListPopupWindowImpl IMPL = new BaseListPopupWindowImpl();
+  static final ListPopupWindowImpl IMPL = new ListPopupWindowCompat.BaseListPopupWindowImpl();
 
   static
   {
     if (Build.VERSION.SDK_INT >= 19)
     {
-      IMPL = new KitKatListPopupWindowImpl();
+      IMPL = new ListPopupWindowCompat.KitKatListPopupWindowImpl();
       return;
     }
   }
@@ -20,23 +20,6 @@ public class ListPopupWindowCompat
   public static View.OnTouchListener createDragToOpenListener(Object paramObject, View paramView)
   {
     return IMPL.createDragToOpenListener(paramObject, paramView);
-  }
-
-  static class BaseListPopupWindowImpl
-    implements ListPopupWindowCompat.ListPopupWindowImpl
-  {
-    public View.OnTouchListener createDragToOpenListener(Object paramObject, View paramView)
-    {
-      return null;
-    }
-  }
-
-  static class KitKatListPopupWindowImpl extends ListPopupWindowCompat.BaseListPopupWindowImpl
-  {
-    public View.OnTouchListener createDragToOpenListener(Object paramObject, View paramView)
-    {
-      return ListPopupWindowCompatKitKat.createDragToOpenListener(paramObject, paramView);
-    }
   }
 
   static abstract interface ListPopupWindowImpl

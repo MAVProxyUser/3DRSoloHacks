@@ -43,7 +43,7 @@ public class ActivityChooserModel extends DataSetObservable
   private static final Object sRegistryLock = new Object();
   private final List<ActivityResolveInfo> mActivities = new ArrayList();
   private OnChooseActivityListener mActivityChoserModelPolicy;
-  private ActivitySorter mActivitySorter = new DefaultSorter(null);
+  private ActivitySorter mActivitySorter = new ActivityChooserModel.DefaultSorter(this, null);
   private boolean mCanReadHistoricalData = true;
   private final Context mContext;
   private final List<HistoricalRecord> mHistoricalRecords = new ArrayList();
@@ -510,43 +510,6 @@ public class ActivityChooserModel extends DataSetObservable
   public static abstract interface ActivitySorter
   {
     public abstract void sort(Intent paramIntent, List<ActivityChooserModel.ActivityResolveInfo> paramList, List<ActivityChooserModel.HistoricalRecord> paramList1);
-  }
-
-  private final class DefaultSorter
-    implements ActivityChooserModel.ActivitySorter
-  {
-    private static final float WEIGHT_DECAY_COEFFICIENT = 0.95F;
-    private final Map<String, ActivityChooserModel.ActivityResolveInfo> mPackageNameToActivityMap = new HashMap();
-
-    private DefaultSorter()
-    {
-    }
-
-    public void sort(Intent paramIntent, List<ActivityChooserModel.ActivityResolveInfo> paramList, List<ActivityChooserModel.HistoricalRecord> paramList1)
-    {
-      Map localMap = this.mPackageNameToActivityMap;
-      localMap.clear();
-      int i = paramList.size();
-      for (int j = 0; j < i; j++)
-      {
-        ActivityChooserModel.ActivityResolveInfo localActivityResolveInfo2 = (ActivityChooserModel.ActivityResolveInfo)paramList.get(j);
-        localActivityResolveInfo2.weight = 0.0F;
-        localMap.put(localActivityResolveInfo2.resolveInfo.activityInfo.packageName, localActivityResolveInfo2);
-      }
-      int k = -1 + paramList1.size();
-      float f = 1.0F;
-      for (int m = k; m >= 0; m--)
-      {
-        ActivityChooserModel.HistoricalRecord localHistoricalRecord = (ActivityChooserModel.HistoricalRecord)paramList1.get(m);
-        ActivityChooserModel.ActivityResolveInfo localActivityResolveInfo1 = (ActivityChooserModel.ActivityResolveInfo)localMap.get(localHistoricalRecord.activity.getPackageName());
-        if (localActivityResolveInfo1 != null)
-        {
-          localActivityResolveInfo1.weight += f * localHistoricalRecord.weight;
-          f *= 0.95F;
-        }
-      }
-      Collections.sort(paramList);
-    }
   }
 
   public static final class HistoricalRecord

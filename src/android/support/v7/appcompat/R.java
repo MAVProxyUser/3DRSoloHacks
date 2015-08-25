@@ -600,7 +600,7 @@ public final class R
     public static final int abc_shareactionprovider_share_with = 2131099660;
     public static final int abc_shareactionprovider_share_with_application = 2131099661;
     public static final int abc_toolbar_collapse_description = 2131099702;
-    public static final int status_bar_notification_info_overflow = 2131100015;
+    public static final int status_bar_notification_info_overflow = 2131100020;
   }
 
   public static final class style

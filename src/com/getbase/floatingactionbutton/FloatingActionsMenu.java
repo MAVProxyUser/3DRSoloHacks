@@ -91,31 +91,7 @@ public class FloatingActionsMenu extends ViewGroup
 
   private void createAddButton(Context paramContext)
   {
-    this.mAddButton = new AddFloatingActionButton(paramContext)
-    {
-      Drawable getIconDrawable()
-      {
-        FloatingActionsMenu.RotatingDrawable localRotatingDrawable = new FloatingActionsMenu.RotatingDrawable(super.getIconDrawable());
-        FloatingActionsMenu.access$402(FloatingActionsMenu.this, localRotatingDrawable);
-        OvershootInterpolator localOvershootInterpolator = new OvershootInterpolator();
-        ObjectAnimator localObjectAnimator1 = ObjectAnimator.ofFloat(localRotatingDrawable, "rotation", new float[] { 135.0F, 0.0F });
-        ObjectAnimator localObjectAnimator2 = ObjectAnimator.ofFloat(localRotatingDrawable, "rotation", new float[] { 0.0F, 135.0F });
-        localObjectAnimator1.setInterpolator(localOvershootInterpolator);
-        localObjectAnimator2.setInterpolator(localOvershootInterpolator);
-        FloatingActionsMenu.this.mExpandAnimation.play(localObjectAnimator2);
-        FloatingActionsMenu.this.mCollapseAnimation.play(localObjectAnimator1);
-        return localRotatingDrawable;
-      }
-
-      void updateBackground()
-      {
-        this.mPlusColor = FloatingActionsMenu.this.mAddButtonPlusColor;
-        this.mColorNormal = FloatingActionsMenu.this.mAddButtonColorNormal;
-        this.mColorPressed = FloatingActionsMenu.this.mAddButtonColorPressed;
-        this.mStrokeVisible = FloatingActionsMenu.this.mAddButtonStrokeVisible;
-        super.updateBackground();
-      }
-    };
+    this.mAddButton = new FloatingActionsMenu.1(this, paramContext);
     this.mAddButton.setId(R.id.fab_expand_menu_button);
     this.mAddButton.setSize(this.mAddButtonSize);
     this.mAddButton.setOnClickListener(new View.OnClickListener()

@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.os.Build.VERSION;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
-import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.appcompat.R.attr;
 import android.support.v7.appcompat.R.styleable;
 import android.support.v7.internal.view.ViewPropertyAnimatorCompatSet;
@@ -33,7 +32,7 @@ abstract class AbsActionBarView extends ViewGroup
   protected boolean mSplitActionBar;
   protected ViewGroup mSplitView;
   protected boolean mSplitWhenNarrow;
-  protected final VisibilityAnimListener mVisAnimListener = new VisibilityAnimListener();
+  protected final AbsActionBarView.VisibilityAnimListener mVisAnimListener = new AbsActionBarView.VisibilityAnimListener(this);
   protected ViewPropertyAnimatorCompat mVisibilityAnim;
 
   AbsActionBarView(Context paramContext)
@@ -230,48 +229,6 @@ abstract class AbsActionBarView extends ViewGroup
     if (this.mActionMenuPresenter != null)
       return this.mActionMenuPresenter.showOverflowMenu();
     return false;
-  }
-
-  protected class VisibilityAnimListener
-    implements ViewPropertyAnimatorListener
-  {
-    private boolean mCanceled = false;
-    int mFinalVisibility;
-
-    protected VisibilityAnimListener()
-    {
-    }
-
-    public void onAnimationCancel(View paramView)
-    {
-      this.mCanceled = true;
-    }
-
-    public void onAnimationEnd(View paramView)
-    {
-      if (this.mCanceled);
-      do
-      {
-        return;
-        AbsActionBarView.this.mVisibilityAnim = null;
-        AbsActionBarView.this.setVisibility(this.mFinalVisibility);
-      }
-      while ((AbsActionBarView.this.mSplitView == null) || (AbsActionBarView.this.mMenuView == null));
-      AbsActionBarView.this.mMenuView.setVisibility(this.mFinalVisibility);
-    }
-
-    public void onAnimationStart(View paramView)
-    {
-      AbsActionBarView.this.setVisibility(0);
-      this.mCanceled = false;
-    }
-
-    public VisibilityAnimListener withFinalVisibility(ViewPropertyAnimatorCompat paramViewPropertyAnimatorCompat, int paramInt)
-    {
-      AbsActionBarView.this.mVisibilityAnim = paramViewPropertyAnimatorCompat;
-      this.mFinalVisibility = paramInt;
-      return this;
-    }
   }
 }
 

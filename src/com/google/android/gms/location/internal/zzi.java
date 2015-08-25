@@ -14,9 +14,6 @@ import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.zzc.zza;
-import com.google.android.gms.location.zzd.zza;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,10 +22,10 @@ import java.util.Map;
 public class zzi
 {
   private final Context mContext;
-  private Map<LocationListener, zzc> zzadz = new HashMap();
+  private Map<LocationListener, zzi.zzc> zzadz = new HashMap();
   private ContentProviderClient zzaqU = null;
   private boolean zzaqV = false;
-  private Map<LocationCallback, zza> zzaqW = new HashMap();
+  private Map<LocationCallback, zzi.zza> zzaqW = new HashMap();
   private final zzn<zzg> zzaqz;
 
   public zzi(Context paramContext, zzn<zzg> paramzzn)
@@ -37,25 +34,25 @@ public class zzi
     this.zzaqz = paramzzn;
   }
 
-  private zza zza(LocationCallback paramLocationCallback, Looper paramLooper)
+  private zzi.zza zza(LocationCallback paramLocationCallback, Looper paramLooper)
   {
     synchronized (this.zzadz)
     {
-      zza localzza = (zza)this.zzaqW.get(paramLocationCallback);
+      zzi.zza localzza = (zzi.zza)this.zzaqW.get(paramLocationCallback);
       if (localzza == null)
-        localzza = new zza(paramLocationCallback, paramLooper);
+        localzza = new zzi.zza(paramLocationCallback, paramLooper);
       this.zzaqW.put(paramLocationCallback, localzza);
       return localzza;
     }
   }
 
-  private zzc zza(LocationListener paramLocationListener, Looper paramLooper)
+  private zzi.zzc zza(LocationListener paramLocationListener, Looper paramLooper)
   {
     synchronized (this.zzadz)
     {
-      zzc localzzc = (zzc)this.zzadz.get(paramLocationListener);
+      zzi.zzc localzzc = (zzi.zzc)this.zzadz.get(paramLocationListener);
       if (localzzc == null)
-        localzzc = new zzc(paramLocationListener, paramLooper);
+        localzzc = new zzi.zzc(paramLocationListener, paramLooper);
       this.zzadz.put(paramLocationListener, localzzc);
       return localzzc;
     }
@@ -84,7 +81,7 @@ public class zzi
         Iterator localIterator1 = this.zzadz.values().iterator();
         while (localIterator1.hasNext())
         {
-          zzc localzzc = (zzc)localIterator1.next();
+          zzi.zzc localzzc = (zzi.zzc)localIterator1.next();
           if (localzzc != null)
             ((zzg)this.zzaqz.zzlX()).zza(LocationRequestUpdateData.zzb(localzzc));
         }
@@ -98,7 +95,7 @@ public class zzi
     Iterator localIterator2 = this.zzaqW.values().iterator();
     while (localIterator2.hasNext())
     {
-      zza localzza = (zza)localIterator2.next();
+      zzi.zza localzza = (zzi.zza)localIterator2.next();
       if (localzza != null)
         ((zzg)this.zzaqz.zzlX()).zza(LocationRequestUpdateData.zza(localzza));
     }
@@ -120,7 +117,7 @@ public class zzi
     zzv.zzb(paramLocationCallback, "Invalid null callback");
     synchronized (this.zzaqW)
     {
-      zza localzza = (zza)this.zzaqW.remove(paramLocationCallback);
+      zzi.zza localzza = (zzi.zza)this.zzaqW.remove(paramLocationCallback);
       if (localzza != null)
       {
         localzza.release();
@@ -137,7 +134,7 @@ public class zzi
     zzv.zzb(paramLocationListener, "Invalid null listener");
     synchronized (this.zzadz)
     {
-      zzc localzzc = (zzc)this.zzadz.remove(paramLocationListener);
+      zzi.zzc localzzc = (zzi.zzc)this.zzadz.remove(paramLocationListener);
       if ((this.zzaqU != null) && (this.zzadz.isEmpty()))
       {
         this.zzaqU.release();
@@ -156,7 +153,7 @@ public class zzi
     throws RemoteException
   {
     this.zzaqz.zzlW();
-    zzc localzzc = zza(paramLocationListener, paramLooper);
+    zzi.zzc localzzc = zza(paramLocationListener, paramLooper);
     ((zzg)this.zzaqz.zzlX()).zza(LocationRequestUpdateData.zzb(LocationRequestInternal.zzb(paramLocationRequest), localzzc));
   }
 
@@ -164,7 +161,7 @@ public class zzi
     throws RemoteException
   {
     this.zzaqz.zzlW();
-    zza localzza = zza(paramLocationCallback, paramLooper);
+    zzi.zza localzza = zza(paramLocationCallback, paramLooper);
     ((zzg)this.zzaqz.zzlX()).zza(LocationRequestUpdateData.zza(paramLocationRequestInternal, localzza));
   }
 
@@ -217,70 +214,6 @@ public class zzi
     }
   }
 
-  private static class zza extends zzc.zza
-  {
-    private Handler zzaqX;
-
-    zza(final LocationCallback paramLocationCallback, Looper paramLooper)
-    {
-      if (paramLooper == null)
-      {
-        paramLooper = Looper.myLooper();
-        if (paramLooper == null)
-          break label39;
-      }
-      label39: for (boolean bool = true; ; bool = false)
-      {
-        zzv.zza(bool, "Can't create handler inside thread that has not called Looper.prepare()");
-        this.zzaqX = new Handler(paramLooper)
-        {
-          public void handleMessage(Message paramAnonymousMessage)
-          {
-            switch (paramAnonymousMessage.what)
-            {
-            default:
-              return;
-            case 0:
-              paramLocationCallback.onLocationResult((LocationResult)paramAnonymousMessage.obj);
-              return;
-            case 1:
-            }
-            paramLocationCallback.onLocationAvailability((LocationAvailability)paramAnonymousMessage.obj);
-          }
-        };
-        return;
-      }
-    }
-
-    private void zzb(int paramInt, Object paramObject)
-    {
-      if (this.zzaqX == null)
-      {
-        Log.e("LocationClientHelper", "Received a data in client after calling removeLocationUpdates.");
-        return;
-      }
-      Message localMessage = Message.obtain();
-      localMessage.what = paramInt;
-      localMessage.obj = paramObject;
-      this.zzaqX.sendMessage(localMessage);
-    }
-
-    public void onLocationAvailability(LocationAvailability paramLocationAvailability)
-    {
-      zzb(1, paramLocationAvailability);
-    }
-
-    public void onLocationResult(LocationResult paramLocationResult)
-    {
-      zzb(0, paramLocationResult);
-    }
-
-    public void release()
-    {
-      this.zzaqX = null;
-    }
-  }
-
   private static class zzb extends Handler
   {
     private final LocationListener zzaqZ;
@@ -307,52 +240,6 @@ public class zzi
       }
       Location localLocation = new Location((Location)paramMessage.obj);
       this.zzaqZ.onLocationChanged(localLocation);
-    }
-  }
-
-  private static class zzc extends zzd.zza
-  {
-    private Handler zzaqX;
-
-    zzc(LocationListener paramLocationListener, Looper paramLooper)
-    {
-      boolean bool;
-      if (paramLooper == null)
-      {
-        if (Looper.myLooper() != null)
-        {
-          bool = true;
-          zzv.zza(bool, "Can't create handler inside thread that has not called Looper.prepare()");
-        }
-      }
-      else
-        if (paramLooper != null)
-          break label49;
-      label49: for (zzi.zzb localzzb = new zzi.zzb(paramLocationListener); ; localzzb = new zzi.zzb(paramLocationListener, paramLooper))
-      {
-        this.zzaqX = localzzb;
-        return;
-        bool = false;
-        break;
-      }
-    }
-
-    public void onLocationChanged(Location paramLocation)
-    {
-      if (this.zzaqX == null)
-      {
-        Log.e("LocationClientHelper", "Received a location in client after calling removeLocationUpdates.");
-        return;
-      }
-      Message localMessage = Message.obtain();
-      localMessage.what = 1;
-      localMessage.obj = paramLocation;
-      this.zzaqX.sendMessage(localMessage);
-    }
-
-    public void release()
-    {
-      this.zzaqX = null;
     }
   }
 }

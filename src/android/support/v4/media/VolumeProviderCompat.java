@@ -39,18 +39,7 @@ public abstract class VolumeProviderCompat
   {
     if ((this.mVolumeProviderObj != null) || (Build.VERSION.SDK_INT < 21))
       return this.mVolumeProviderObj;
-    this.mVolumeProviderObj = VolumeProviderCompatApi21.createVolumeProvider(this.mControlType, this.mMaxVolume, this.mCurrentVolume, new VolumeProviderCompatApi21.Delegate()
-    {
-      public void onAdjustVolume(int paramAnonymousInt)
-      {
-        VolumeProviderCompat.this.onAdjustVolume(paramAnonymousInt);
-      }
-
-      public void onSetVolumeTo(int paramAnonymousInt)
-      {
-        VolumeProviderCompat.this.onSetVolumeTo(paramAnonymousInt);
-      }
-    });
+    this.mVolumeProviderObj = VolumeProviderCompatApi21.createVolumeProvider(this.mControlType, this.mMaxVolume, this.mCurrentVolume, new VolumeProviderCompat.1(this));
     return this.mVolumeProviderObj;
   }
 

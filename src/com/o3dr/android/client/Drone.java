@@ -516,23 +516,7 @@ public class Drone
     if (paramBundle != null)
       paramBundle.setClassLoader(this.context.getClassLoader());
     if ("com.o3dr.services.android.lib.attribute.event.STATE_UPDATED".equals(paramString))
-      getAttributeAsync("com.o3dr.services.android.lib.attribute.STATE", new OnAttributeRetrievedCallback()
-      {
-        public void onRetrievalFailed()
-        {
-          Drone.this.stopTimer();
-        }
-
-        public void onRetrievalSucceed(State paramAnonymousState)
-        {
-          if (paramAnonymousState.isFlying())
-          {
-            Drone.this.resetFlightTimer();
-            return;
-          }
-          Drone.this.stopTimer();
-        }
-      });
+      getAttributeAsync("com.o3dr.services.android.lib.attribute.STATE", new Drone.5(this));
     while (this.droneListeners.isEmpty())
     {
       return;
@@ -721,18 +705,6 @@ public class Drone
   public void writeParameters(Parameters paramParameters)
   {
     ParameterApi.writeParameters(this, paramParameters);
-  }
-
-  public static class AttributeRetrievedListener<T extends Parcelable>
-    implements Drone.OnAttributeRetrievedCallback<T>
-  {
-    public void onRetrievalFailed()
-    {
-    }
-
-    public void onRetrievalSucceed(T paramT)
-    {
-    }
   }
 
   public static abstract interface OnAttributeRetrievedCallback<T extends Parcelable>

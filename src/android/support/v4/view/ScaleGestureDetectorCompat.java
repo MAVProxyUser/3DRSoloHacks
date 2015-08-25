@@ -4,13 +4,13 @@ import android.os.Build.VERSION;
 
 public class ScaleGestureDetectorCompat
 {
-  static final ScaleGestureDetectorImpl IMPL = new BaseScaleGestureDetectorImpl(null);
+  static final ScaleGestureDetectorImpl IMPL = new ScaleGestureDetectorCompat.BaseScaleGestureDetectorImpl(null);
 
   static
   {
     if (Build.VERSION.SDK_INT >= 19)
     {
-      IMPL = new ScaleGestureDetectorCompatKitKatImpl(null);
+      IMPL = new ScaleGestureDetectorCompat.ScaleGestureDetectorCompatKitKatImpl(null);
       return;
     }
   }
@@ -23,33 +23,6 @@ public class ScaleGestureDetectorCompat
   public static void setQuickScaleEnabled(Object paramObject, boolean paramBoolean)
   {
     IMPL.setQuickScaleEnabled(paramObject, paramBoolean);
-  }
-
-  private static class BaseScaleGestureDetectorImpl
-    implements ScaleGestureDetectorCompat.ScaleGestureDetectorImpl
-  {
-    public boolean isQuickScaleEnabled(Object paramObject)
-    {
-      return false;
-    }
-
-    public void setQuickScaleEnabled(Object paramObject, boolean paramBoolean)
-    {
-    }
-  }
-
-  private static class ScaleGestureDetectorCompatKitKatImpl
-    implements ScaleGestureDetectorCompat.ScaleGestureDetectorImpl
-  {
-    public boolean isQuickScaleEnabled(Object paramObject)
-    {
-      return ScaleGestureDetectorCompatKitKat.isQuickScaleEnabled(paramObject);
-    }
-
-    public void setQuickScaleEnabled(Object paramObject, boolean paramBoolean)
-    {
-      ScaleGestureDetectorCompatKitKat.setQuickScaleEnabled(paramObject, paramBoolean);
-    }
   }
 
   static abstract interface ScaleGestureDetectorImpl

@@ -7,7 +7,6 @@ import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.MemoryCache;
 import com.nostra13.universalimageloader.cache.memory.impl.FuzzyKeyMemoryCache;
-import com.nostra13.universalimageloader.core.assist.FlushedInputStream;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.decode.ImageDecoder;
@@ -15,8 +14,6 @@ import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.core.process.BitmapProcessor;
 import com.nostra13.universalimageloader.utils.L;
 import com.nostra13.universalimageloader.utils.MemoryCacheUtils;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.Executor;
 
 public final class ImageLoaderConfiguration
@@ -62,8 +59,8 @@ public final class ImageLoaderConfiguration
     this.decoder = paramBuilder.decoder;
     this.customExecutor = paramBuilder.customExecutor;
     this.customExecutorForCachedImages = paramBuilder.customExecutorForCachedImages;
-    this.networkDeniedDownloader = new NetworkDeniedImageDownloader(this.downloader);
-    this.slowNetworkDownloader = new SlowNetworkImageDownloader(this.downloader);
+    this.networkDeniedDownloader = new ImageLoaderConfiguration.NetworkDeniedImageDownloader(this.downloader);
+    this.slowNetworkDownloader = new ImageLoaderConfiguration.SlowNetworkImageDownloader(this.downloader);
     L.writeDebugLogs(paramBuilder.writeLogs);
   }
 
@@ -352,55 +349,6 @@ public final class ImageLoaderConfiguration
     {
       this.writeLogs = true;
       return this;
-    }
-  }
-
-  private static class NetworkDeniedImageDownloader
-    implements ImageDownloader
-  {
-    private final ImageDownloader wrappedDownloader;
-
-    public NetworkDeniedImageDownloader(ImageDownloader paramImageDownloader)
-    {
-      this.wrappedDownloader = paramImageDownloader;
-    }
-
-    public InputStream getStream(String paramString, Object paramObject)
-      throws IOException
-    {
-      switch (ImageLoaderConfiguration.1.$SwitchMap$com$nostra13$universalimageloader$core$download$ImageDownloader$Scheme[com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme.ofUri(paramString).ordinal()])
-      {
-      default:
-        return this.wrappedDownloader.getStream(paramString, paramObject);
-      case 1:
-      case 2:
-      }
-      throw new IllegalStateException();
-    }
-  }
-
-  private static class SlowNetworkImageDownloader
-    implements ImageDownloader
-  {
-    private final ImageDownloader wrappedDownloader;
-
-    public SlowNetworkImageDownloader(ImageDownloader paramImageDownloader)
-    {
-      this.wrappedDownloader = paramImageDownloader;
-    }
-
-    public InputStream getStream(String paramString, Object paramObject)
-      throws IOException
-    {
-      InputStream localInputStream = this.wrappedDownloader.getStream(paramString, paramObject);
-      switch (ImageLoaderConfiguration.1.$SwitchMap$com$nostra13$universalimageloader$core$download$ImageDownloader$Scheme[com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme.ofUri(paramString).ordinal()])
-      {
-      default:
-        return localInputStream;
-      case 1:
-      case 2:
-      }
-      return new FlushedInputStream(localInputStream);
     }
   }
 }

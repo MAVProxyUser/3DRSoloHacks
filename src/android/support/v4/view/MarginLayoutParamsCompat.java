@@ -5,13 +5,13 @@ import android.view.ViewGroup.MarginLayoutParams;
 
 public class MarginLayoutParamsCompat
 {
-  static final MarginLayoutParamsCompatImpl IMPL = new MarginLayoutParamsCompatImplBase();
+  static final MarginLayoutParamsCompatImpl IMPL = new MarginLayoutParamsCompat.MarginLayoutParamsCompatImplBase();
 
   static
   {
     if (Build.VERSION.SDK_INT >= 17)
     {
-      IMPL = new MarginLayoutParamsCompatImplJbMr1();
+      IMPL = new MarginLayoutParamsCompat.MarginLayoutParamsCompatImplJbMr1();
       return;
     }
   }
@@ -73,92 +73,6 @@ public class MarginLayoutParamsCompat
     public abstract void setMarginEnd(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt);
 
     public abstract void setMarginStart(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt);
-  }
-
-  static class MarginLayoutParamsCompatImplBase
-    implements MarginLayoutParamsCompat.MarginLayoutParamsCompatImpl
-  {
-    public int getLayoutDirection(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
-    {
-      return 0;
-    }
-
-    public int getMarginEnd(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
-    {
-      return paramMarginLayoutParams.rightMargin;
-    }
-
-    public int getMarginStart(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
-    {
-      return paramMarginLayoutParams.leftMargin;
-    }
-
-    public boolean isMarginRelative(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
-    {
-      return false;
-    }
-
-    public void resolveLayoutDirection(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt)
-    {
-    }
-
-    public void setLayoutDirection(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt)
-    {
-    }
-
-    public void setMarginEnd(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt)
-    {
-      paramMarginLayoutParams.rightMargin = paramInt;
-    }
-
-    public void setMarginStart(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt)
-    {
-      paramMarginLayoutParams.leftMargin = paramInt;
-    }
-  }
-
-  static class MarginLayoutParamsCompatImplJbMr1
-    implements MarginLayoutParamsCompat.MarginLayoutParamsCompatImpl
-  {
-    public int getLayoutDirection(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
-    {
-      return MarginLayoutParamsCompatJellybeanMr1.getLayoutDirection(paramMarginLayoutParams);
-    }
-
-    public int getMarginEnd(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
-    {
-      return MarginLayoutParamsCompatJellybeanMr1.getMarginEnd(paramMarginLayoutParams);
-    }
-
-    public int getMarginStart(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
-    {
-      return MarginLayoutParamsCompatJellybeanMr1.getMarginStart(paramMarginLayoutParams);
-    }
-
-    public boolean isMarginRelative(ViewGroup.MarginLayoutParams paramMarginLayoutParams)
-    {
-      return MarginLayoutParamsCompatJellybeanMr1.isMarginRelative(paramMarginLayoutParams);
-    }
-
-    public void resolveLayoutDirection(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt)
-    {
-      MarginLayoutParamsCompatJellybeanMr1.resolveLayoutDirection(paramMarginLayoutParams, paramInt);
-    }
-
-    public void setLayoutDirection(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt)
-    {
-      MarginLayoutParamsCompatJellybeanMr1.setLayoutDirection(paramMarginLayoutParams, paramInt);
-    }
-
-    public void setMarginEnd(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt)
-    {
-      MarginLayoutParamsCompatJellybeanMr1.setMarginEnd(paramMarginLayoutParams, paramInt);
-    }
-
-    public void setMarginStart(ViewGroup.MarginLayoutParams paramMarginLayoutParams, int paramInt)
-    {
-      MarginLayoutParamsCompatJellybeanMr1.setMarginStart(paramMarginLayoutParams, paramInt);
-    }
   }
 }
 

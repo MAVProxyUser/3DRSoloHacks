@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,7 +19,6 @@ import android.util.Log;
 import android.widget.ImageView;
 import com.google.android.gms.common.internal.zzb;
 import com.google.android.gms.internal.zzhg;
-import com.google.android.gms.internal.zzhp;
 import com.google.android.gms.internal.zzic;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public final class ImageManager
   private final Context mContext;
   private final Handler mHandler;
   private final ExecutorService zzRV;
-  private final zzb zzRW;
+  private final ImageManager.zzb zzRW;
   private final zzhg zzRX;
   private final Map<zza, ImageReceiver> zzRY;
   private final Map<Uri, ImageReceiver> zzRZ;
@@ -53,7 +51,7 @@ public final class ImageManager
     this.zzRV = Executors.newFixedThreadPool(4);
     if (paramBoolean)
     {
-      this.zzRW = new zzb(this.mContext);
+      this.zzRW = new ImageManager.zzb(this.mContext);
       if (zzic.zznh())
         zzlw();
     }
@@ -184,42 +182,6 @@ public final class ImageManager
     static int zza(ActivityManager paramActivityManager)
     {
       return paramActivityManager.getLargeMemoryClass();
-    }
-  }
-
-  private static final class zzb extends zzhp<zza.zza, Bitmap>
-  {
-    public zzb(Context paramContext)
-    {
-      super();
-    }
-
-    private static int zzT(Context paramContext)
-    {
-      ActivityManager localActivityManager = (ActivityManager)paramContext.getSystemService("activity");
-      int i;
-      if ((0x100000 & paramContext.getApplicationInfo().flags) != 0)
-      {
-        i = 1;
-        if ((i == 0) || (!zzic.zzne()))
-          break label55;
-      }
-      label55: for (int j = ImageManager.zza.zza(localActivityManager); ; j = localActivityManager.getMemoryClass())
-      {
-        return (int)(0.33F * (j * 1048576));
-        i = 0;
-        break;
-      }
-    }
-
-    protected int zza(zza.zza paramzza, Bitmap paramBitmap)
-    {
-      return paramBitmap.getHeight() * paramBitmap.getRowBytes();
-    }
-
-    protected void zza(boolean paramBoolean, zza.zza paramzza, Bitmap paramBitmap1, Bitmap paramBitmap2)
-    {
-      super.entryRemoved(paramBoolean, paramzza, paramBitmap1, paramBitmap2);
     }
   }
 

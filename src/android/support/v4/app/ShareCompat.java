@@ -21,18 +21,18 @@ public class ShareCompat
 {
   public static final String EXTRA_CALLING_ACTIVITY = "android.support.v4.app.EXTRA_CALLING_ACTIVITY";
   public static final String EXTRA_CALLING_PACKAGE = "android.support.v4.app.EXTRA_CALLING_PACKAGE";
-  private static ShareCompatImpl IMPL = new ShareCompatImplBase();
+  private static ShareCompatImpl IMPL = new ShareCompat.ShareCompatImplBase();
 
   static
   {
     if (Build.VERSION.SDK_INT >= 16)
     {
-      IMPL = new ShareCompatImplJB();
+      IMPL = new ShareCompat.ShareCompatImplJB();
       return;
     }
     if (Build.VERSION.SDK_INT >= 14)
     {
-      IMPL = new ShareCompatImplICS();
+      IMPL = new ShareCompat.ShareCompatImplICS();
       return;
     }
   }
@@ -488,91 +488,6 @@ public class ShareCompat
     public abstract void configureMenuItem(MenuItem paramMenuItem, ShareCompat.IntentBuilder paramIntentBuilder);
 
     public abstract String escapeHtml(CharSequence paramCharSequence);
-  }
-
-  static class ShareCompatImplBase
-    implements ShareCompat.ShareCompatImpl
-  {
-    private static void withinStyle(StringBuilder paramStringBuilder, CharSequence paramCharSequence, int paramInt1, int paramInt2)
-    {
-      int i = paramInt1;
-      if (i < paramInt2)
-      {
-        char c = paramCharSequence.charAt(i);
-        if (c == '<')
-          paramStringBuilder.append("&lt;");
-        while (true)
-        {
-          i++;
-          break;
-          if (c == '>')
-          {
-            paramStringBuilder.append("&gt;");
-          }
-          else if (c == '&')
-          {
-            paramStringBuilder.append("&amp;");
-          }
-          else if ((c > '~') || (c < ' '))
-          {
-            paramStringBuilder.append("&#" + c + ";");
-          }
-          else if (c == ' ')
-          {
-            while ((i + 1 < paramInt2) && (paramCharSequence.charAt(i + 1) == ' '))
-            {
-              paramStringBuilder.append("&nbsp;");
-              i++;
-            }
-            paramStringBuilder.append(' ');
-          }
-          else
-          {
-            paramStringBuilder.append(c);
-          }
-        }
-      }
-    }
-
-    public void configureMenuItem(MenuItem paramMenuItem, ShareCompat.IntentBuilder paramIntentBuilder)
-    {
-      paramMenuItem.setIntent(paramIntentBuilder.createChooserIntent());
-    }
-
-    public String escapeHtml(CharSequence paramCharSequence)
-    {
-      StringBuilder localStringBuilder = new StringBuilder();
-      withinStyle(localStringBuilder, paramCharSequence, 0, paramCharSequence.length());
-      return localStringBuilder.toString();
-    }
-  }
-
-  static class ShareCompatImplICS extends ShareCompat.ShareCompatImplBase
-  {
-    public void configureMenuItem(MenuItem paramMenuItem, ShareCompat.IntentBuilder paramIntentBuilder)
-    {
-      ShareCompatICS.configureMenuItem(paramMenuItem, paramIntentBuilder.getActivity(), paramIntentBuilder.getIntent());
-      if (shouldAddChooserIntent(paramMenuItem))
-        paramMenuItem.setIntent(paramIntentBuilder.createChooserIntent());
-    }
-
-    boolean shouldAddChooserIntent(MenuItem paramMenuItem)
-    {
-      return !paramMenuItem.hasSubMenu();
-    }
-  }
-
-  static class ShareCompatImplJB extends ShareCompat.ShareCompatImplICS
-  {
-    public String escapeHtml(CharSequence paramCharSequence)
-    {
-      return ShareCompatJB.escapeHtml(paramCharSequence);
-    }
-
-    boolean shouldAddChooserIntent(MenuItem paramMenuItem)
-    {
-      return false;
-    }
   }
 }
 

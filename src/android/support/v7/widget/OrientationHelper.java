@@ -17,12 +17,7 @@ public abstract class OrientationHelper
 
   public static OrientationHelper createHorizontalHelper(RecyclerView.LayoutManager paramLayoutManager)
   {
-    // Byte code:
-    //   0: new 30	android/support/v7/widget/OrientationHelper$1
-    //   3: dup
-    //   4: aload_0
-    //   5: invokespecial 31	android/support/v7/widget/OrientationHelper$1:<init>	(Landroid/support/v7/widget/RecyclerView$LayoutManager;)V
-    //   8: areturn
+    return new OrientationHelper.1(paramLayoutManager);
   }
 
   public static OrientationHelper createOrientationHelper(RecyclerView.LayoutManager paramLayoutManager, int paramInt)
@@ -40,12 +35,7 @@ public abstract class OrientationHelper
 
   public static OrientationHelper createVerticalHelper(RecyclerView.LayoutManager paramLayoutManager)
   {
-    // Byte code:
-    //   0: new 47	android/support/v7/widget/OrientationHelper$2
-    //   3: dup
-    //   4: aload_0
-    //   5: invokespecial 48	android/support/v7/widget/OrientationHelper$2:<init>	(Landroid/support/v7/widget/RecyclerView$LayoutManager;)V
-    //   8: areturn
+    return new OrientationHelper.2(paramLayoutManager);
   }
 
   public abstract int getDecoratedEnd(View paramView);

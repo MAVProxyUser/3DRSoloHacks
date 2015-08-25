@@ -10,7 +10,6 @@ import android.os.Build.VERSION;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.util.LruCache;
 import android.support.v7.appcompat.R.attr;
 import android.support.v7.appcompat.R.drawable;
 import android.util.SparseArray;
@@ -23,7 +22,7 @@ public final class TintManager
   private static final int[] COLORFILTER_COLOR_BACKGROUND_MULTIPLY;
   private static final int[] COLORFILTER_COLOR_CONTROL_ACTIVATED;
   private static final int[] COLORFILTER_TINT_COLOR_CONTROL_NORMAL;
-  private static final ColorFilterLruCache COLOR_FILTER_CACHE;
+  private static final TintManager.ColorFilterLruCache COLOR_FILTER_CACHE;
   private static final boolean DEBUG = false;
   private static final PorterDuff.Mode DEFAULT_MODE;
   private static final WeakHashMap<Context, TintManager> INSTANCE_CACHE;
@@ -44,7 +43,7 @@ public final class TintManager
       SHOULD_BE_USED = bool;
       DEFAULT_MODE = PorterDuff.Mode.SRC_IN;
       INSTANCE_CACHE = new WeakHashMap();
-      COLOR_FILTER_CACHE = new ColorFilterLruCache(6);
+      COLOR_FILTER_CACHE = new TintManager.ColorFilterLruCache(6);
       int[] arrayOfInt1 = new int[3];
       arrayOfInt1[0] = R.drawable.abc_textfield_search_default_mtrl_alpha;
       arrayOfInt1[1] = R.drawable.abc_textfield_default_mtrl_alpha;
@@ -465,29 +464,6 @@ public final class TintManager
           }
         }
       }
-    }
-  }
-
-  private static class ColorFilterLruCache extends LruCache<Integer, PorterDuffColorFilter>
-  {
-    public ColorFilterLruCache(int paramInt)
-    {
-      super();
-    }
-
-    private static int generateCacheKey(int paramInt, PorterDuff.Mode paramMode)
-    {
-      return 31 * (paramInt + 31) + paramMode.hashCode();
-    }
-
-    PorterDuffColorFilter get(int paramInt, PorterDuff.Mode paramMode)
-    {
-      return (PorterDuffColorFilter)get(Integer.valueOf(generateCacheKey(paramInt, paramMode)));
-    }
-
-    PorterDuffColorFilter put(int paramInt, PorterDuff.Mode paramMode, PorterDuffColorFilter paramPorterDuffColorFilter)
-    {
-      return (PorterDuffColorFilter)put(Integer.valueOf(generateCacheKey(paramInt, paramMode)), paramPorterDuffColorFilter);
     }
   }
 }

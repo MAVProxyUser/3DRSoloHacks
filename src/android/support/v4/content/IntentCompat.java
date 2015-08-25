@@ -13,19 +13,19 @@ public class IntentCompat
   public static final String EXTRA_HTML_TEXT = "android.intent.extra.HTML_TEXT";
   public static final int FLAG_ACTIVITY_CLEAR_TASK = 32768;
   public static final int FLAG_ACTIVITY_TASK_ON_HOME = 16384;
-  private static final IntentCompatImpl IMPL = new IntentCompatImplBase();
+  private static final IntentCompatImpl IMPL = new IntentCompat.IntentCompatImplBase();
 
   static
   {
     int i = Build.VERSION.SDK_INT;
     if (i >= 15)
     {
-      IMPL = new IntentCompatImplIcsMr1();
+      IMPL = new IntentCompat.IntentCompatImplIcsMr1();
       return;
     }
     if (i >= 11)
     {
-      IMPL = new IntentCompatImplHC();
+      IMPL = new IntentCompat.IntentCompatImplHC();
       return;
     }
   }
@@ -52,53 +52,6 @@ public class IntentCompat
     public abstract Intent makeMainSelectorActivity(String paramString1, String paramString2);
 
     public abstract Intent makeRestartActivityTask(ComponentName paramComponentName);
-  }
-
-  static class IntentCompatImplBase
-    implements IntentCompat.IntentCompatImpl
-  {
-    public Intent makeMainActivity(ComponentName paramComponentName)
-    {
-      Intent localIntent = new Intent("android.intent.action.MAIN");
-      localIntent.setComponent(paramComponentName);
-      localIntent.addCategory("android.intent.category.LAUNCHER");
-      return localIntent;
-    }
-
-    public Intent makeMainSelectorActivity(String paramString1, String paramString2)
-    {
-      Intent localIntent = new Intent(paramString1);
-      localIntent.addCategory(paramString2);
-      return localIntent;
-    }
-
-    public Intent makeRestartActivityTask(ComponentName paramComponentName)
-    {
-      Intent localIntent = makeMainActivity(paramComponentName);
-      localIntent.addFlags(268468224);
-      return localIntent;
-    }
-  }
-
-  static class IntentCompatImplHC extends IntentCompat.IntentCompatImplBase
-  {
-    public Intent makeMainActivity(ComponentName paramComponentName)
-    {
-      return IntentCompatHoneycomb.makeMainActivity(paramComponentName);
-    }
-
-    public Intent makeRestartActivityTask(ComponentName paramComponentName)
-    {
-      return IntentCompatHoneycomb.makeRestartActivityTask(paramComponentName);
-    }
-  }
-
-  static class IntentCompatImplIcsMr1 extends IntentCompat.IntentCompatImplHC
-  {
-    public Intent makeMainSelectorActivity(String paramString1, String paramString2)
-    {
-      return IntentCompatIcsMr1.makeMainSelectorActivity(paramString1, paramString2);
-    }
   }
 }
 

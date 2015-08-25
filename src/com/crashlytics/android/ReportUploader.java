@@ -3,11 +3,9 @@ package com.crashlytics.android;
 import io.fabric.sdk.android.Fabric;
 import io.fabric.sdk.android.Logger;
 import io.fabric.sdk.android.services.common.ApiKey;
-import io.fabric.sdk.android.services.common.BackgroundPriorityRunnable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +106,7 @@ class ReportUploader
     {
       if (this.uploadThread == null)
       {
-        this.uploadThread = new Thread(new Worker(paramFloat), "Crashlytics Report Uploader");
+        this.uploadThread = new Thread(new ReportUploader.Worker(this, paramFloat), "Crashlytics Report Uploader");
         this.uploadThread.start();
       }
       return;
@@ -117,95 +115,6 @@ class ReportUploader
     {
       localObject = finally;
       throw localObject;
-    }
-  }
-
-  private class Worker extends BackgroundPriorityRunnable
-  {
-    private final float delay;
-
-    Worker(float arg2)
-    {
-      Object localObject;
-      this.delay = localObject;
-    }
-
-    private void attemptUploadWithRetry()
-    {
-      Fabric.getLogger().d("Fabric", "Starting report processing in " + this.delay + " second(s)...");
-      if (this.delay > 0.0F);
-      Crashlytics localCrashlytics;
-      CrashlyticsUncaughtExceptionHandler localCrashlyticsUncaughtExceptionHandler;
-      List localList;
-      break label186;
-      while (true)
-      {
-        try
-        {
-          Thread.sleep(()(1000.0F * this.delay));
-          localCrashlytics = Crashlytics.getInstance();
-          localCrashlyticsUncaughtExceptionHandler = localCrashlytics.getHandler();
-          localList = ReportUploader.this.findReports();
-          if (localCrashlyticsUncaughtExceptionHandler.isHandlingException())
-            label81: return;
-        }
-        catch (InterruptedException localInterruptedException2)
-        {
-          Thread.currentThread().interrupt();
-          return;
-        }
-        if ((localList.isEmpty()) || (localCrashlytics.canSendWithUserApproval()))
-          break;
-        Fabric.getLogger().d("Fabric", "User declined to send. Removing " + localList.size() + " Report(s).");
-        Iterator localIterator2 = localList.iterator();
-        while (localIterator2.hasNext())
-          ((Report)localIterator2.next()).remove();
-      }
-      int i = 0;
-      while (true)
-      {
-        label186: if ((localList.isEmpty()) || (Crashlytics.getInstance().getHandler().isHandlingException()))
-          break label81;
-        Fabric.getLogger().d("Fabric", "Attempting to send " + localList.size() + " report(s)");
-        Iterator localIterator1 = localList.iterator();
-        while (localIterator1.hasNext())
-        {
-          Report localReport = (Report)localIterator1.next();
-          ReportUploader.this.forceUpload(localReport);
-        }
-        localList = ReportUploader.this.findReports();
-        if (localList.isEmpty())
-          break;
-        short[] arrayOfShort = ReportUploader.RETRY_INTERVALS;
-        int j = i + 1;
-        long l1 = arrayOfShort[java.lang.Math.min(i, -1 + ReportUploader.RETRY_INTERVALS.length)];
-        Fabric.getLogger().d("Fabric", "Report submisson: scheduling delayed retry in " + l1 + " seconds");
-        long l2 = 1000L * l1;
-        try
-        {
-          Thread.sleep(l2);
-          i = j;
-        }
-        catch (InterruptedException localInterruptedException1)
-        {
-          Thread.currentThread().interrupt();
-        }
-      }
-    }
-
-    public void onRun()
-    {
-      try
-      {
-        attemptUploadWithRetry();
-        ReportUploader.access$002(ReportUploader.this, null);
-        return;
-      }
-      catch (Exception localException)
-      {
-        while (true)
-          Fabric.getLogger().e("Fabric", "An unexpected error occurred while attempting to upload crash reports.", localException);
-      }
     }
   }
 }
