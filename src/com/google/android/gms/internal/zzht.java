@@ -1,0 +1,13 @@
+package com.google.android.gms.internal;
+
+public abstract interface zzht
+{
+  public abstract long currentTimeMillis();
+
+  public abstract long elapsedRealtime();
+}
+
+/* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar
+ * Qualified Name:     com.google.android.gms.internal.zzht
+ * JD-Core Version:    0.6.2
+ */
