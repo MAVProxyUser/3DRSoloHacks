@@ -7,18 +7,18 @@ import android.view.View;
 
 public class SearchViewCompat
 {
-  private static final SearchViewCompatImpl IMPL = new SearchViewCompatStubImpl();
+  private static final SearchViewCompatImpl IMPL = new SearchViewCompat.SearchViewCompatStubImpl();
 
   static
   {
     if (Build.VERSION.SDK_INT >= 14)
     {
-      IMPL = new SearchViewCompatIcsImpl();
+      IMPL = new SearchViewCompat.SearchViewCompatIcsImpl();
       return;
     }
     if (Build.VERSION.SDK_INT >= 11)
     {
-      IMPL = new SearchViewCompatHoneycombImpl();
+      IMPL = new SearchViewCompat.SearchViewCompatHoneycombImpl();
       return;
     }
   }
@@ -132,124 +132,6 @@ public class SearchViewCompat
     }
   }
 
-  static class SearchViewCompatHoneycombImpl extends SearchViewCompat.SearchViewCompatStubImpl
-  {
-    public CharSequence getQuery(View paramView)
-    {
-      return SearchViewCompatHoneycomb.getQuery(paramView);
-    }
-
-    public boolean isIconified(View paramView)
-    {
-      return SearchViewCompatHoneycomb.isIconified(paramView);
-    }
-
-    public boolean isQueryRefinementEnabled(View paramView)
-    {
-      return SearchViewCompatHoneycomb.isQueryRefinementEnabled(paramView);
-    }
-
-    public boolean isSubmitButtonEnabled(View paramView)
-    {
-      return SearchViewCompatHoneycomb.isSubmitButtonEnabled(paramView);
-    }
-
-    public Object newOnCloseListener(final SearchViewCompat.OnCloseListenerCompat paramOnCloseListenerCompat)
-    {
-      return SearchViewCompatHoneycomb.newOnCloseListener(new SearchViewCompatHoneycomb.OnCloseListenerCompatBridge()
-      {
-        public boolean onClose()
-        {
-          return paramOnCloseListenerCompat.onClose();
-        }
-      });
-    }
-
-    public Object newOnQueryTextListener(final SearchViewCompat.OnQueryTextListenerCompat paramOnQueryTextListenerCompat)
-    {
-      return SearchViewCompatHoneycomb.newOnQueryTextListener(new SearchViewCompatHoneycomb.OnQueryTextListenerCompatBridge()
-      {
-        public boolean onQueryTextChange(String paramAnonymousString)
-        {
-          return paramOnQueryTextListenerCompat.onQueryTextChange(paramAnonymousString);
-        }
-
-        public boolean onQueryTextSubmit(String paramAnonymousString)
-        {
-          return paramOnQueryTextListenerCompat.onQueryTextSubmit(paramAnonymousString);
-        }
-      });
-    }
-
-    public View newSearchView(Context paramContext)
-    {
-      return SearchViewCompatHoneycomb.newSearchView(paramContext);
-    }
-
-    public void setIconified(View paramView, boolean paramBoolean)
-    {
-      SearchViewCompatHoneycomb.setIconified(paramView, paramBoolean);
-    }
-
-    public void setMaxWidth(View paramView, int paramInt)
-    {
-      SearchViewCompatHoneycomb.setMaxWidth(paramView, paramInt);
-    }
-
-    public void setOnCloseListener(Object paramObject1, Object paramObject2)
-    {
-      SearchViewCompatHoneycomb.setOnCloseListener(paramObject1, paramObject2);
-    }
-
-    public void setOnQueryTextListener(Object paramObject1, Object paramObject2)
-    {
-      SearchViewCompatHoneycomb.setOnQueryTextListener(paramObject1, paramObject2);
-    }
-
-    public void setQuery(View paramView, CharSequence paramCharSequence, boolean paramBoolean)
-    {
-      SearchViewCompatHoneycomb.setQuery(paramView, paramCharSequence, paramBoolean);
-    }
-
-    public void setQueryHint(View paramView, CharSequence paramCharSequence)
-    {
-      SearchViewCompatHoneycomb.setQueryHint(paramView, paramCharSequence);
-    }
-
-    public void setQueryRefinementEnabled(View paramView, boolean paramBoolean)
-    {
-      SearchViewCompatHoneycomb.setQueryRefinementEnabled(paramView, paramBoolean);
-    }
-
-    public void setSearchableInfo(View paramView, ComponentName paramComponentName)
-    {
-      SearchViewCompatHoneycomb.setSearchableInfo(paramView, paramComponentName);
-    }
-
-    public void setSubmitButtonEnabled(View paramView, boolean paramBoolean)
-    {
-      SearchViewCompatHoneycomb.setSubmitButtonEnabled(paramView, paramBoolean);
-    }
-  }
-
-  static class SearchViewCompatIcsImpl extends SearchViewCompat.SearchViewCompatHoneycombImpl
-  {
-    public View newSearchView(Context paramContext)
-    {
-      return SearchViewCompatIcs.newSearchView(paramContext);
-    }
-
-    public void setImeOptions(View paramView, int paramInt)
-    {
-      SearchViewCompatIcs.setImeOptions(paramView, paramInt);
-    }
-
-    public void setInputType(View paramView, int paramInt)
-    {
-      SearchViewCompatIcs.setInputType(paramView, paramInt);
-    }
-  }
-
   static abstract interface SearchViewCompatImpl
   {
     public abstract CharSequence getQuery(View paramView);
@@ -287,89 +169,6 @@ public class SearchViewCompat
     public abstract void setSearchableInfo(View paramView, ComponentName paramComponentName);
 
     public abstract void setSubmitButtonEnabled(View paramView, boolean paramBoolean);
-  }
-
-  static class SearchViewCompatStubImpl
-    implements SearchViewCompat.SearchViewCompatImpl
-  {
-    public CharSequence getQuery(View paramView)
-    {
-      return null;
-    }
-
-    public boolean isIconified(View paramView)
-    {
-      return true;
-    }
-
-    public boolean isQueryRefinementEnabled(View paramView)
-    {
-      return false;
-    }
-
-    public boolean isSubmitButtonEnabled(View paramView)
-    {
-      return false;
-    }
-
-    public Object newOnCloseListener(SearchViewCompat.OnCloseListenerCompat paramOnCloseListenerCompat)
-    {
-      return null;
-    }
-
-    public Object newOnQueryTextListener(SearchViewCompat.OnQueryTextListenerCompat paramOnQueryTextListenerCompat)
-    {
-      return null;
-    }
-
-    public View newSearchView(Context paramContext)
-    {
-      return null;
-    }
-
-    public void setIconified(View paramView, boolean paramBoolean)
-    {
-    }
-
-    public void setImeOptions(View paramView, int paramInt)
-    {
-    }
-
-    public void setInputType(View paramView, int paramInt)
-    {
-    }
-
-    public void setMaxWidth(View paramView, int paramInt)
-    {
-    }
-
-    public void setOnCloseListener(Object paramObject1, Object paramObject2)
-    {
-    }
-
-    public void setOnQueryTextListener(Object paramObject1, Object paramObject2)
-    {
-    }
-
-    public void setQuery(View paramView, CharSequence paramCharSequence, boolean paramBoolean)
-    {
-    }
-
-    public void setQueryHint(View paramView, CharSequence paramCharSequence)
-    {
-    }
-
-    public void setQueryRefinementEnabled(View paramView, boolean paramBoolean)
-    {
-    }
-
-    public void setSearchableInfo(View paramView, ComponentName paramComponentName)
-    {
-    }
-
-    public void setSubmitButtonEnabled(View paramView, boolean paramBoolean)
-    {
-    }
   }
 }
 

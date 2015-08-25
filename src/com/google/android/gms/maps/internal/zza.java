@@ -1,30 +1,5 @@
-package com.google.android.gms.maps.internal;
-
-public final class zza
+class 
 {
-  public static Boolean zza(byte paramByte)
-  {
-    switch (paramByte)
-    {
-    default:
-      return null;
-    case 1:
-      return Boolean.TRUE;
-    case 0:
-    }
-    return Boolean.FALSE;
-  }
-
-  public static byte zzd(Boolean paramBoolean)
-  {
-    if (paramBoolean != null)
-    {
-      if (paramBoolean.booleanValue())
-        return 1;
-      return 0;
-    }
-    return -1;
-  }
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

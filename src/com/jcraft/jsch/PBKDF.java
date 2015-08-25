@@ -1,8 +1,5 @@
-package com.jcraft.jsch;
-
-public abstract interface PBKDF
+class 
 {
-  public abstract byte[] getKey(byte[] paramArrayOfByte1, byte[] paramArrayOfByte2, int paramInt1, int paramInt2);
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

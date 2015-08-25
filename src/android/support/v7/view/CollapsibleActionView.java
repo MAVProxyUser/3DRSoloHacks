@@ -1,10 +1,5 @@
-package android.support.v7.view;
-
-public abstract interface CollapsibleActionView
+class 
 {
-  public abstract void onActionViewCollapsed();
-
-  public abstract void onActionViewExpanded();
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

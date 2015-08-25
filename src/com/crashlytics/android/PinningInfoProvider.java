@@ -1,14 +1,5 @@
-package com.crashlytics.android;
-
-import java.io.InputStream;
-
-public abstract interface PinningInfoProvider
+class 
 {
-  public abstract String getKeyStorePassword();
-
-  public abstract InputStream getKeyStoreStream();
-
-  public abstract String[] getPins();
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

@@ -20,10 +20,10 @@ public final class PrintHelper
   {
     if (systemSupportsPrint())
     {
-      this.mImpl = new PrintHelperKitkatImpl(paramContext);
+      this.mImpl = new PrintHelper.PrintHelperKitkatImpl(paramContext);
       return;
     }
-    this.mImpl = new PrintHelperStubImpl(null);
+    this.mImpl = new PrintHelper.PrintHelperStubImpl(null);
   }
 
   public static boolean systemSupportsPrint()
@@ -86,122 +86,6 @@ public final class PrintHelper
   public static abstract interface OnPrintFinishCallback
   {
     public abstract void onFinish();
-  }
-
-  private static final class PrintHelperKitkatImpl
-    implements PrintHelper.PrintHelperVersionImpl
-  {
-    private final PrintHelperKitkat mPrintHelper;
-
-    PrintHelperKitkatImpl(Context paramContext)
-    {
-      this.mPrintHelper = new PrintHelperKitkat(paramContext);
-    }
-
-    public int getColorMode()
-    {
-      return this.mPrintHelper.getColorMode();
-    }
-
-    public int getOrientation()
-    {
-      return this.mPrintHelper.getOrientation();
-    }
-
-    public int getScaleMode()
-    {
-      return this.mPrintHelper.getScaleMode();
-    }
-
-    public void printBitmap(String paramString, Bitmap paramBitmap, final PrintHelper.OnPrintFinishCallback paramOnPrintFinishCallback)
-    {
-      PrintHelperKitkat.OnPrintFinishCallback local1 = null;
-      if (paramOnPrintFinishCallback != null)
-        local1 = new PrintHelperKitkat.OnPrintFinishCallback()
-        {
-          public void onFinish()
-          {
-            paramOnPrintFinishCallback.onFinish();
-          }
-        };
-      this.mPrintHelper.printBitmap(paramString, paramBitmap, local1);
-    }
-
-    public void printBitmap(String paramString, Uri paramUri, final PrintHelper.OnPrintFinishCallback paramOnPrintFinishCallback)
-      throws FileNotFoundException
-    {
-      PrintHelperKitkat.OnPrintFinishCallback local2 = null;
-      if (paramOnPrintFinishCallback != null)
-        local2 = new PrintHelperKitkat.OnPrintFinishCallback()
-        {
-          public void onFinish()
-          {
-            paramOnPrintFinishCallback.onFinish();
-          }
-        };
-      this.mPrintHelper.printBitmap(paramString, paramUri, local2);
-    }
-
-    public void setColorMode(int paramInt)
-    {
-      this.mPrintHelper.setColorMode(paramInt);
-    }
-
-    public void setOrientation(int paramInt)
-    {
-      this.mPrintHelper.setOrientation(paramInt);
-    }
-
-    public void setScaleMode(int paramInt)
-    {
-      this.mPrintHelper.setScaleMode(paramInt);
-    }
-  }
-
-  private static final class PrintHelperStubImpl
-    implements PrintHelper.PrintHelperVersionImpl
-  {
-    int mColorMode = 2;
-    int mOrientation = 1;
-    int mScaleMode = 2;
-
-    public int getColorMode()
-    {
-      return this.mColorMode;
-    }
-
-    public int getOrientation()
-    {
-      return this.mOrientation;
-    }
-
-    public int getScaleMode()
-    {
-      return this.mScaleMode;
-    }
-
-    public void printBitmap(String paramString, Bitmap paramBitmap, PrintHelper.OnPrintFinishCallback paramOnPrintFinishCallback)
-    {
-    }
-
-    public void printBitmap(String paramString, Uri paramUri, PrintHelper.OnPrintFinishCallback paramOnPrintFinishCallback)
-    {
-    }
-
-    public void setColorMode(int paramInt)
-    {
-      this.mColorMode = paramInt;
-    }
-
-    public void setOrientation(int paramInt)
-    {
-      this.mOrientation = paramInt;
-    }
-
-    public void setScaleMode(int paramInt)
-    {
-      this.mScaleMode = paramInt;
-    }
   }
 
   static abstract interface PrintHelperVersionImpl

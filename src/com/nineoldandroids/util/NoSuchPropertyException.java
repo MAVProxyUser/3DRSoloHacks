@@ -1,11 +1,5 @@
-package com.nineoldandroids.util;
-
-public class NoSuchPropertyException extends RuntimeException
+class 
 {
-  public NoSuchPropertyException(String paramString)
-  {
-    super(paramString);
-  }
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

@@ -8,7 +8,7 @@ import android.view.View;
 
 public class MenuItemCompat
 {
-  static final MenuVersionImpl IMPL = new BaseMenuVersionImpl();
+  static final MenuVersionImpl IMPL = new MenuItemCompat.BaseMenuVersionImpl();
   public static final int SHOW_AS_ACTION_ALWAYS = 2;
   public static final int SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW = 8;
   public static final int SHOW_AS_ACTION_IF_ROOM = 1;
@@ -21,12 +21,12 @@ public class MenuItemCompat
     int i = Build.VERSION.SDK_INT;
     if (i >= 14)
     {
-      IMPL = new IcsMenuVersionImpl();
+      IMPL = new MenuItemCompat.IcsMenuVersionImpl();
       return;
     }
     if (i >= 11)
     {
-      IMPL = new HoneycombMenuVersionImpl();
+      IMPL = new MenuItemCompat.HoneycombMenuVersionImpl();
       return;
     }
   }
@@ -104,129 +104,6 @@ public class MenuItemCompat
       return;
     }
     IMPL.setShowAsAction(paramMenuItem, paramInt);
-  }
-
-  static class BaseMenuVersionImpl
-    implements MenuItemCompat.MenuVersionImpl
-  {
-    public boolean collapseActionView(MenuItem paramMenuItem)
-    {
-      return false;
-    }
-
-    public boolean expandActionView(MenuItem paramMenuItem)
-    {
-      return false;
-    }
-
-    public View getActionView(MenuItem paramMenuItem)
-    {
-      return null;
-    }
-
-    public boolean isActionViewExpanded(MenuItem paramMenuItem)
-    {
-      return false;
-    }
-
-    public MenuItem setActionView(MenuItem paramMenuItem, int paramInt)
-    {
-      return paramMenuItem;
-    }
-
-    public MenuItem setActionView(MenuItem paramMenuItem, View paramView)
-    {
-      return paramMenuItem;
-    }
-
-    public MenuItem setOnActionExpandListener(MenuItem paramMenuItem, MenuItemCompat.OnActionExpandListener paramOnActionExpandListener)
-    {
-      return paramMenuItem;
-    }
-
-    public void setShowAsAction(MenuItem paramMenuItem, int paramInt)
-    {
-    }
-  }
-
-  static class HoneycombMenuVersionImpl
-    implements MenuItemCompat.MenuVersionImpl
-  {
-    public boolean collapseActionView(MenuItem paramMenuItem)
-    {
-      return false;
-    }
-
-    public boolean expandActionView(MenuItem paramMenuItem)
-    {
-      return false;
-    }
-
-    public View getActionView(MenuItem paramMenuItem)
-    {
-      return MenuItemCompatHoneycomb.getActionView(paramMenuItem);
-    }
-
-    public boolean isActionViewExpanded(MenuItem paramMenuItem)
-    {
-      return false;
-    }
-
-    public MenuItem setActionView(MenuItem paramMenuItem, int paramInt)
-    {
-      return MenuItemCompatHoneycomb.setActionView(paramMenuItem, paramInt);
-    }
-
-    public MenuItem setActionView(MenuItem paramMenuItem, View paramView)
-    {
-      return MenuItemCompatHoneycomb.setActionView(paramMenuItem, paramView);
-    }
-
-    public MenuItem setOnActionExpandListener(MenuItem paramMenuItem, MenuItemCompat.OnActionExpandListener paramOnActionExpandListener)
-    {
-      return paramMenuItem;
-    }
-
-    public void setShowAsAction(MenuItem paramMenuItem, int paramInt)
-    {
-      MenuItemCompatHoneycomb.setShowAsAction(paramMenuItem, paramInt);
-    }
-  }
-
-  static class IcsMenuVersionImpl extends MenuItemCompat.HoneycombMenuVersionImpl
-  {
-    public boolean collapseActionView(MenuItem paramMenuItem)
-    {
-      return MenuItemCompatIcs.collapseActionView(paramMenuItem);
-    }
-
-    public boolean expandActionView(MenuItem paramMenuItem)
-    {
-      return MenuItemCompatIcs.expandActionView(paramMenuItem);
-    }
-
-    public boolean isActionViewExpanded(MenuItem paramMenuItem)
-    {
-      return MenuItemCompatIcs.isActionViewExpanded(paramMenuItem);
-    }
-
-    public MenuItem setOnActionExpandListener(MenuItem paramMenuItem, final MenuItemCompat.OnActionExpandListener paramOnActionExpandListener)
-    {
-      if (paramOnActionExpandListener == null)
-        return MenuItemCompatIcs.setOnActionExpandListener(paramMenuItem, null);
-      return MenuItemCompatIcs.setOnActionExpandListener(paramMenuItem, new MenuItemCompatIcs.SupportActionExpandProxy()
-      {
-        public boolean onMenuItemActionCollapse(MenuItem paramAnonymousMenuItem)
-        {
-          return paramOnActionExpandListener.onMenuItemActionCollapse(paramAnonymousMenuItem);
-        }
-
-        public boolean onMenuItemActionExpand(MenuItem paramAnonymousMenuItem)
-        {
-          return paramOnActionExpandListener.onMenuItemActionExpand(paramAnonymousMenuItem);
-        }
-      });
-    }
   }
 
   static abstract interface MenuVersionImpl

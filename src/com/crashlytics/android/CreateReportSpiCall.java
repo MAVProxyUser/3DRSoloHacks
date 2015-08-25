@@ -1,8 +1,5 @@
-package com.crashlytics.android;
-
-abstract interface CreateReportSpiCall
+class 
 {
-  public abstract boolean invoke(CreateReportRequest paramCreateReportRequest);
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

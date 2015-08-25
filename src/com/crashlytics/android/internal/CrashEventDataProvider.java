@@ -1,10 +1,5 @@
-package com.crashlytics.android.internal;
-
-import com.crashlytics.android.internal.models.SessionEventData;
-
-public abstract interface CrashEventDataProvider
+class 
 {
-  public abstract SessionEventData getCrashEventData();
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

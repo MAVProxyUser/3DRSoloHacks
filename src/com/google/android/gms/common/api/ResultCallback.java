@@ -1,8 +1,5 @@
-package com.google.android.gms.common.api;
-
-public abstract interface ResultCallback<R extends Result>
+class 
 {
-  public abstract void onResult(R paramR);
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

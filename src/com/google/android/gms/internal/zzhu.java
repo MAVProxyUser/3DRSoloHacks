@@ -1,20 +1,5 @@
-package com.google.android.gms.internal;
-
-import android.database.CharArrayBuffer;
-
-public final class zzhu
+class 
 {
-  public static void zzb(String paramString, CharArrayBuffer paramCharArrayBuffer)
-  {
-    if ((paramCharArrayBuffer.data == null) || (paramCharArrayBuffer.data.length < paramString.length()))
-      paramCharArrayBuffer.data = paramString.toCharArray();
-    while (true)
-    {
-      paramCharArrayBuffer.sizeCopied = paramString.length();
-      return;
-      paramString.getChars(0, paramString.length(), paramCharArrayBuffer.data, 0);
-    }
-  }
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

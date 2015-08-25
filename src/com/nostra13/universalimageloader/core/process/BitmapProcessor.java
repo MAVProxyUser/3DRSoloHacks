@@ -1,10 +1,5 @@
-package com.nostra13.universalimageloader.core.process;
-
-import android.graphics.Bitmap;
-
-public abstract interface BitmapProcessor
+class 
 {
-  public abstract Bitmap process(Bitmap paramBitmap);
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

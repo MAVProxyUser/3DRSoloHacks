@@ -4,13 +4,13 @@ import android.os.Build.VERSION;
 
 public class ICUCompat
 {
-  private static final ICUCompatImpl IMPL = new ICUCompatImplBase();
+  private static final ICUCompatImpl IMPL = new ICUCompat.ICUCompatImplBase();
 
   static
   {
     if (Build.VERSION.SDK_INT >= 14)
     {
-      IMPL = new ICUCompatImplIcs();
+      IMPL = new ICUCompat.ICUCompatImplIcs();
       return;
     }
   }
@@ -30,34 +30,6 @@ public class ICUCompat
     public abstract String addLikelySubtags(String paramString);
 
     public abstract String getScript(String paramString);
-  }
-
-  static class ICUCompatImplBase
-    implements ICUCompat.ICUCompatImpl
-  {
-    public String addLikelySubtags(String paramString)
-    {
-      return paramString;
-    }
-
-    public String getScript(String paramString)
-    {
-      return null;
-    }
-  }
-
-  static class ICUCompatImplIcs
-    implements ICUCompat.ICUCompatImpl
-  {
-    public String addLikelySubtags(String paramString)
-    {
-      return ICUCompatIcs.addLikelySubtags(paramString);
-    }
-
-    public String getScript(String paramString)
-    {
-      return ICUCompatIcs.getScript(paramString);
-    }
   }
 }
 

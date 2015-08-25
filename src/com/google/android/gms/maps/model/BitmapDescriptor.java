@@ -1,21 +1,5 @@
-package com.google.android.gms.maps.model;
-
-import com.google.android.gms.common.internal.zzv;
-import com.google.android.gms.dynamic.zzd;
-
-public final class BitmapDescriptor
+class 
 {
-  private final zzd zzatq;
-
-  public BitmapDescriptor(zzd paramzzd)
-  {
-    this.zzatq = ((zzd)zzv.zzr(paramzzd));
-  }
-
-  public zzd zztp()
-  {
-    return this.zzatq;
-  }
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

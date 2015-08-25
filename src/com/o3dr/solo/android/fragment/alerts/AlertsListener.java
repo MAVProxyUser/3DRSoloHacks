@@ -1,10 +1,5 @@
-package com.o3dr.solo.android.fragment.alerts;
-
-public abstract interface AlertsListener
+class 
 {
-  public abstract void onAlertHidden(AlertType paramAlertType);
-
-  public abstract void onAlertShown(AlertType paramAlertType);
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

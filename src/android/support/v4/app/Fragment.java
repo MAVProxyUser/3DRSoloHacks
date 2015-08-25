@@ -505,22 +505,7 @@ public class Fragment
   void instantiateChildFragmentManager()
   {
     this.mChildFragmentManager = new FragmentManagerImpl();
-    this.mChildFragmentManager.attachActivity(this.mActivity, new FragmentContainer()
-    {
-      @Nullable
-      public View findViewById(int paramAnonymousInt)
-      {
-        if (Fragment.this.mView == null)
-          throw new IllegalStateException("Fragment does not have a view");
-        return Fragment.this.mView.findViewById(paramAnonymousInt);
-      }
-
-      public boolean hasView()
-      {
-        return Fragment.this.mView != null;
-      }
-    }
-    , this);
+    this.mChildFragmentManager.attachActivity(this.mActivity, new Fragment.1(this), this);
   }
 
   public final boolean isAdded()

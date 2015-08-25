@@ -1,10 +1,5 @@
-package com.o3dr.android.client.interfaces;
-
-public abstract interface TowerListener
+class 
 {
-  public abstract void onTowerConnected();
-
-  public abstract void onTowerDisconnected();
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

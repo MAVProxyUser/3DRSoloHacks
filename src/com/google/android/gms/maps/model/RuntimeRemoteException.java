@@ -1,13 +1,5 @@
-package com.google.android.gms.maps.model;
-
-import android.os.RemoteException;
-
-public final class RuntimeRemoteException extends RuntimeException
+class 
 {
-  public RuntimeRemoteException(RemoteException paramRemoteException)
-  {
-    super(paramRemoteException);
-  }
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

@@ -1,10 +1,5 @@
-package com.MAVLink.enums;
-
-public class GRIPPER_ACTIONS
+class 
 {
-  public static final int GRIPPER_ACTIONS_ENUM_END = 2;
-  public static final int GRIPPER_ACTION_GRAB = 1;
-  public static final int GRIPPER_ACTION_RELEASE;
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar

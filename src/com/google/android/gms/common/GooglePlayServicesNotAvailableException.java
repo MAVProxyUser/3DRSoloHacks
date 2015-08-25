@@ -1,13 +1,5 @@
-package com.google.android.gms.common;
-
-public final class GooglePlayServicesNotAvailableException extends Exception
+class 
 {
-  public final int errorCode;
-
-  public GooglePlayServicesNotAvailableException(int paramInt)
-  {
-    this.errorCode = paramInt;
-  }
 }
 
 /* Location:           /Users/kfinisterre/Desktop/Solo/3DRSoloHacks/unpacked_apk/classes_dex2jar.jar
