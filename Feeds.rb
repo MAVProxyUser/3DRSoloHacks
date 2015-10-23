@@ -11,7 +11,7 @@ def print_relnotes(info)
 	parsed["results"].each do |result|
 	  releases = result["releases"].each do |release|
 		  unless release.nil?
-#		    puts release["release_notes"]
+		    puts release["release_notes"]
 		    puts release["file"]
 		  else
 		#    puts "There is no release!"
