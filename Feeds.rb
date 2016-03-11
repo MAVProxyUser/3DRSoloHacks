@@ -33,7 +33,7 @@ def print_relnotes(info)
 end
 
 if ARGV.length < 1
- puts "ruby #{ARGV[0]} [prod|beta|both]"
+ puts "ruby #{ARGV[0]} [prod|beta|alpha|externalbeta|sitescanalpha|sitescanexternalbeta|sitescanproduction|minus|all]"
 end 
 
 if ARGV[0] == "prod"
